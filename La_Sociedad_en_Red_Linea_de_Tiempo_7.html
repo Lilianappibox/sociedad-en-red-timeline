@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sociedad en Red</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg: #EEF2F6;
+    --bg-raised: #FFFFFF;
+    --ink: #101820;
+    --ink-soft: #47535E;
+    --line: #C7D1DA;
+    --line-soft: #DCE3E9;
+    --brand-blue: #174B93;
+    --brand-blue-ink: #0E3266;
+    --brand-gold: #C9970E;
+    --spine: #9FB0BE;
+
+    --hue-precursores: #6E5A46;
+    --hue-1960: #1B3A66;
+    --hue-1970: #2F6B4A;
+    --hue-1980: #A47610;
+    --hue-1990: #B85A18;
+    --hue-2000: #B23A2E;
+    --hue-2010: #63478F;
+    --hue-2020-a: #0F9E8E;
+    --hue-2020-b: #7B5CFA;
+    --hue-2020-c: #E8497A;
+    --hue-2020-d: #E3A62B;
+
+    --dim-tec: #1E7C8C;
+    --dim-con: #8A6210;
+    --dim-poder: #A6303F;
+    --dim-soc: #6B4E9E;
+
+    --shadow: 0 1px 2px rgba(16,24,32,.06), 0 8px 24px -12px rgba(16,24,32,.18);
+    --radius: 14px;
+
+    /* fixed (non theme-swapping) tokens for the cover, which is a deliberate
+       always-dark "boot screen" regardless of viewer theme */
+    --cover-1: #0A1F3F;
+    --cover-2: #123A6E;
+    --cover-3: #174B93;
+    --cover-ink: #BFD8F7;
+    --cover-ink-dim: #8FB2DD;
+    --cover-gold: #F5C518;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #0B1119;
+      --bg-raised: #131B26;
+      --ink: #E9EEF3;
+      --ink-soft: #A7B4C0;
+      --line: #263243;
+      --line-soft: #1B2531;
+      --brand-blue: #4C8DE0;
+      --brand-blue-ink: #BFD8F7;
+      --brand-gold: #F0C34E;
+      --spine: #3A4A5C;
+
+      --hue-precursores: #B49C82;
+      --hue-1960: #5B84C4;
+      --hue-1970: #5FA97D;
+      --hue-1980: #E0B23E;
+      --hue-1990: #E8955A;
+      --hue-2000: #E27367;
+      --hue-2010: #A78BD1;
+
+      --dim-tec: #4FB4C6;
+      --dim-con: #D8AE55;
+      --dim-poder: #DE7481;
+      --dim-soc: #B79BE8;
+
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #0B1119;
+    --bg-raised: #131B26;
+    --ink: #E9EEF3;
+    --ink-soft: #A7B4C0;
+    --line: #263243;
+    --line-soft: #1B2531;
+    --brand-blue: #4C8DE0;
+    --brand-blue-ink: #BFD8F7;
+    --brand-gold: #F0C34E;
+    --spine: #3A4A5C;
+
+    --hue-precursores: #B49C82;
+    --hue-1960: #5B84C4;
+    --hue-1970: #5FA97D;
+    --hue-1980: #E0B23E;
+    --hue-1990: #E8955A;
+    --hue-2000: #E27367;
+    --hue-2010: #A78BD1;
+
+    --dim-tec: #4FB4C6;
+    --dim-con: #D8AE55;
+    --dim-poder: #DE7481;
+    --dim-soc: #B79BE8;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size:16px;
+    line-height:1.55;
+  }
+  h1,h2,h3{ font-family:"Fraunces", Georgia, "Times New Roman", serif; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+
+  .wrap{ max-width:920px; margin:0 auto; padding:0 24px; }
+
+  /* ============ COVER ============ */
+  .cover{
+    position:relative;
+    background:
+      radial-gradient(1100px 480px at 85% -10%, rgba(255,255,255,.08), transparent 60%),
+      linear-gradient(165deg, var(--cover-2) 0%, var(--cover-3) 62%, var(--cover-1) 100%);
+    color:#F3F7FC;
+    overflow:hidden;
+    padding:56px 24px 44px;
+  }
+  .cover::before{ /* circuit / network grid backdrop */
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(700px 420px at 50% 20%, #000 40%, transparent 85%);
+    pointer-events:none;
+  }
+  .cover-inner{ position:relative; max-width:920px; margin:0 auto; }
+
+  .cover-top{ display:flex; align-items:center; gap:18px; margin-bottom:30px; }
+  .cover-logo{ width:74px; height:74px; border-radius:14px; background:var(--cover-1); padding:6px; box-shadow:var(--shadow); flex:none; }
+  .cover-uni{ font-family:"IBM Plex Mono", monospace; font-size:12.5px; color:var(--cover-ink); line-height:1.5; }
+  .cover-uni strong{ color:#fff; font-size:13.5px; display:block; letter-spacing:.03em; }
+
+  .cover h1{
+    font-size:clamp(30px, 5.4vw, 50px);
+    font-weight:700;
+    line-height:1.06;
+    color:#fff;
+    max-width:15ch;
+  }
+  .cover .subtitle{
+    margin-top:14px;
+    max-width:52ch;
+    font-size:16.5px;
+    color:#D9E7F8;
+  }
+  .cover .subtitle em{ font-style:normal; color:var(--cover-gold); font-weight:600; }
+
+  .cover-meta{
+    margin-top:34px;
+    display:grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap:10px 28px;
+    padding-top:24px;
+    border-top:1px dashed rgba(255,255,255,.25);
+  }
+  .cover-meta .item .label{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--cover-ink-dim); }
+  .cover-meta .item .val{ font-size:15px; color:#fff; margin-top:2px; font-weight:500; }
+  @media (max-width:560px){ .cover-meta{ grid-template-columns:1fr; } }
+
+  /* ============ NAV ============ */
+  .decade-nav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .decade-nav-scroll{
+    display:flex; gap:6px; overflow-x:auto; padding:10px 24px;
+    max-width:920px; margin:0 auto;
+    scrollbar-width:none;
+  }
+  .decade-nav-scroll::-webkit-scrollbar{ display:none; }
+  .decade-nav-bar{ display:flex; align-items:center; gap:8px; max-width:920px; margin:0 auto; padding:0 24px; }
+  .decade-nav-bar .decade-nav-scroll{ padding:10px 0; flex:1 1 auto; min-width:0; }
+  .nav-pill{
+    flex:none; font-family:"IBM Plex Mono",monospace; font-size:12px;
+    padding:7px 12px; border-radius:100px; border:1px solid color-mix(in srgb, var(--dot,var(--brand-blue)) 30%, var(--line));
+    background:color-mix(in srgb, var(--dot,var(--brand-blue)) 9%, var(--bg-raised)); color:var(--ink-soft); cursor:pointer;
+    white-space:nowrap; transition:border-color .15s, color .15s, background .15s, transform .12s;
+  }
+  .nav-pill:hover{ border-color:var(--dot,var(--brand-blue)); color:var(--ink); transform:translateY(-1px); }
+  .nav-pill.active{ background:var(--dot,var(--brand-blue)); border-color:var(--dot,var(--brand-blue)); color:#fff; }
+  .theme-toggle{
+    flex:none; width:34px; height:34px; border-radius:50%; cursor:pointer;
+    border:1px solid var(--line); background:var(--bg-raised); color:var(--ink);
+    font-size:15px; display:flex; align-items:center; justify-content:center;
+    transition:transform .15s, border-color .15s;
+  }
+  .theme-toggle:hover{ border-color:var(--brand-blue); transform:rotate(14deg); }
+  .progress-bar{ height:3px; background:var(--line-soft); overflow:hidden; }
+  .progress-bar-fill{ height:100%; width:0%; background:var(--brand-blue); transition:background .3s; }
+
+  /* ============ INTRO ============ */
+  .intro{ padding:40px 24px 8px; }
+  .intro p{ max-width:64ch; color:var(--ink-soft); font-size:16px; }
+  .intro .kicker{ font-family:"IBM Plex Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--brand-blue); margin-bottom:10px; }
+  .intro h2{ font-size:26px; margin-bottom:14px; }
+
+  /* legend / filters */
+  .legend{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:22px 0 6px;
+  }
+  .era .legend{ margin:4px 0 12px; }
+  .legend-caption{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-soft); margin-right:2px;
+  }
+  .legend-btn{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:"IBM Plex Mono",monospace; font-size:12px;
+    border:1px solid var(--line); background:var(--bg-raised);
+    padding:7px 12px 7px 9px; border-radius:100px; cursor:pointer; color:var(--ink);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .legend-btn .dot{ width:9px; height:9px; border-radius:50%; background:var(--c); flex:none; }
+  .legend-btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow); }
+  .legend-btn.active{ background:var(--c); border-color:var(--c); color:#fff; }
+  .legend-btn.active .dot{ background:#fff; }
+  .legend-btn.dimmed{ opacity:.4; }
+  .legend-reset{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-soft); background:none; border:1px dashed var(--line); border-radius:100px; padding:7px 12px; cursor:pointer; transition:opacity .15s, color .15s, border-color .15s; }
+  .legend-reset:hover{ color:var(--ink); border-color:var(--ink-soft); }
+  .legend-status{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-soft); margin:12px 0 2px; min-height:16px; }
+  .legend-status strong{ color:var(--ink); font-weight:600; }
+
+  body[data-filter] .chip{ opacity:.32; filter:saturate(.5); }
+  body[data-filter] .chip[data-dim="__f__"]{ opacity:1; filter:none; box-shadow:0 0 0 2px var(--c) inset; }
+
+  /* ============ TIMELINE ============ */
+  .timeline{ position:relative; padding:8px 24px 10px; max-width:920px; margin:0 auto; }
+  .timeline::before{
+    content:""; position:absolute; left:52px; top:6px; bottom:24px; width:2px;
+    background:repeating-linear-gradient(var(--spine),var(--spine) 6px, transparent 6px, transparent 12px);
+  }
+  .packet{
+    position:absolute; left:47px; width:12px; height:12px; transform:rotate(45deg);
+    background:var(--brand-gold); border-radius:2px; box-shadow:0 0 0 4px color-mix(in srgb, var(--brand-gold) 18%, transparent);
+    animation:travel 16s linear infinite;
+  }
+  @keyframes travel{ 0%{ top:6px; opacity:0;} 4%{opacity:1;} 96%{opacity:1;} 100%{ top:calc(100% - 30px); opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .packet{ animation:none; top:40px; } }
+
+  .era{ position:relative; padding-left:88px; margin-bottom:46px; scroll-margin-top:64px; }
+  .era-node{
+    position:absolute; left:24px; top:2px; width:56px; height:56px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+    background:var(--dot); box-shadow:var(--shadow), 0 0 0 4px var(--bg);
+  }
+  .era-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+  .era-head h3{ font-size:23px; color:var(--dot); }
+  .era-range{ font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink-soft); }
+  .era-frame{ color:var(--ink-soft); max-width:62ch; margin:8px 0 18px; }
+
+  .ledger{
+    background:color-mix(in srgb, var(--dot) 5%, var(--bg-raised));
+    border:1px solid color-mix(in srgb, var(--dot) 28%, var(--line-soft));
+    border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden; margin-bottom:18px;
+  }
+  .ledger-title{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:#fff; padding:10px 16px; background:var(--dot);
+  }
+  .ledger-row{ display:grid; grid-template-columns:110px 1fr; gap:14px; padding:11px 16px; border-bottom:1px solid color-mix(in srgb, var(--dot) 14%, var(--line-soft)); transition:background .12s, transform .12s; }
+  .ledger-row:last-child{ border-bottom:none; }
+  .ledger-row:hover{ background:color-mix(in srgb, var(--dot) 12%, transparent); transform:translateX(2px); }
+  .ledger-row .yr{ font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--dot); font-weight:700; }
+  .ledger-row .ev{ font-size:14.5px; color:var(--ink); }
+
+  .dims{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  @media (max-width:600px){ .dims{ grid-template-columns:1fr; } }
+  .chip{
+    --c: var(--dim-tec);
+    border:1px solid color-mix(in srgb, var(--c) 35%, var(--line-soft)); border-left:4px solid var(--c);
+    background:color-mix(in srgb, var(--c) 11%, var(--bg-raised)); border-radius:10px; padding:10px 12px;
+    transition:opacity .15s, box-shadow .15s, transform .15s;
+  }
+  .chip:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .chip[data-dim="con"]{ --c: var(--dim-con); }
+  .chip[data-dim="poder"]{ --c: var(--dim-poder); }
+  .chip[data-dim="soc"]{ --c: var(--dim-soc); }
+  .chip .chip-h{ display:flex; align-items:center; gap:7px; font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--c); margin-bottom:5px; font-weight:600; }
+  .chip p{ margin:0; font-size:13.5px; color:var(--ink); }
+
+  /* ---- era illustrations (click or press Enter to play) ---- */
+  .era-visual{
+    position:relative; margin:2px 0 18px; border-radius:var(--radius); overflow:hidden;
+    border:1px solid color-mix(in srgb, var(--dot) 25%, var(--line-soft)); box-shadow:var(--shadow);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .era-visual svg{ width:100%; height:auto; display:block; color:var(--dot); }
+  .era-visual:focus-visible{ outline:3px solid var(--dot); outline-offset:2px; }
+  .play-badge{
+    position:absolute; top:9px; right:11px; width:27px; height:27px; border-radius:50%;
+    background:var(--dot); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:11px; box-shadow:var(--shadow); transition:transform .18s, opacity .18s; pointer-events:none;
+  }
+  .era-visual:hover .play-badge{ transform:scale(1.12); }
+  .era-visual.playing .play-badge{ opacity:.5; }
+  .era-visual .progress-fill{ transform:scaleX(0); transform-box:fill-box; transform-origin:0% 50%; }
+  .era-hint{
+    position:absolute; left:11px; bottom:9px; font-family:"IBM Plex Mono",monospace; font-size:10px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--dot); background:color-mix(in srgb, var(--dot) 12%, var(--bg-raised));
+    padding:3px 8px; border-radius:100px; opacity:.85; pointer-events:none;
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .era-visual .flow-dot{ opacity:0; transform-box:fill-box; transform-origin:center; }
+    .era-visual.playing .flow-dot{ animation-name:flow-travel; animation-duration:1.4s; animation-timing-function:ease-in-out; animation-fill-mode:forwards; }
+    @keyframes flow-travel{
+      0%{ transform:translate(0,0) rotate(var(--rot,0deg)); opacity:0; }
+      14%{ opacity:1; }
+      82%{ opacity:1; }
+      100%{ transform:translate(var(--tx,0px), var(--ty,0px)) rotate(var(--rot,0deg)); opacity:0; }
+    }
+    .era-visual.playing .impact-flash{ animation:impact-flash .55s ease-in-out; animation-delay:var(--delay, 1.1s); }
+    @keyframes impact-flash{ 0%,100%{ opacity:var(--base-op,.14); } 50%{ opacity:.68; } }
+
+    .era-visual.playing .impact-bounce{ animation:impact-bounce .5s ease-out; animation-delay:var(--delay, 1.1s); transform-box:fill-box; transform-origin:center; }
+    @keyframes impact-bounce{ 0%{ transform:translateY(0) scale(1); } 40%{ transform:translateY(-5px) scale(1.06); } 100%{ transform:translateY(0) scale(1); } }
+
+    .era-visual.playing .impact-glow{ animation:impact-glow .65s ease-in-out; animation-delay:var(--delay, 1.1s); }
+    @keyframes impact-glow{ 0%,100%{ opacity:var(--glow-base,.35); } 45%{ opacity:1; } }
+
+    .era-visual.playing .cursor-click{ animation:cursor-click 1.6s ease-in-out; }
+    @keyframes cursor-click{
+      0%{ transform:translate(0,0) scale(1); }
+      34%{ transform:translate(var(--ctx,0px), var(--cty,0px)) scale(1); }
+      44%{ transform:translate(var(--ctx,0px), var(--cty,0px)) scale(.82); }
+      56%{ transform:translate(var(--ctx,0px), var(--cty,0px)) scale(1); }
+      100%{ transform:translate(0,0) scale(1); }
+    }
+
+    .era-visual.playing .progress-fill{ animation:progress-fill 1.6s ease-in-out; animation-delay:.55s; transform-box:fill-box; transform-origin:0% 50%; }
+    @keyframes progress-fill{ 0%{ transform:scaleX(0); } 62%{ transform:scaleX(1); } 100%{ transform:scaleX(1); } }
+
+    .era-visual.playing .floppy-slide{ animation:floppy-slide 1.7s ease-in-out forwards; animation-delay:.25s; }
+    @keyframes floppy-slide{ 0%{ transform:translateX(0); opacity:1; } 68%{ transform:translateX(-132px); opacity:1; } 100%{ transform:translateX(-132px); opacity:0; } }
+
+    .era-visual.playing .lock-shackle{ animation:lock-close 1.4s ease-in-out; transform-box:fill-box; transform-origin:22% 100%; }
+    @keyframes lock-close{ 0%{ transform:translate(7px,-4px) rotate(20deg); } 55%{ transform:translate(7px,-4px) rotate(20deg); } 100%{ transform:translate(0,0) rotate(0deg); } }
+  }
+
+  .gradient-node{ background:conic-gradient(from 200deg, var(--hue-2020-a), var(--hue-2020-b), var(--hue-2020-c), var(--hue-2020-d), var(--hue-2020-a)); }
+
+  /* ============ CLOSING ============ */
+  .closing{ padding:52px 24px 0; }
+  .closing .kicker{ font-family:"IBM Plex Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--brand-blue); margin-bottom:10px; }
+  .closing h2{ font-size:27px; margin-bottom:8px; }
+
+  .hitos{ display:grid; gap:10px; margin:20px 0 40px; }
+  .hito{ display:grid; grid-template-columns:44px 1fr; gap:14px; background:var(--bg-raised); border:1px solid var(--line-soft); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow); }
+  .hito .num{ font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600; color:var(--brand-gold); }
+  .hito h4{ font-family:"IBM Plex Sans"; font-size:15px; font-weight:700; margin:0 0 3px; }
+  .hito p{ margin:0; font-size:13.8px; color:var(--ink-soft); }
+
+  figure.diagram{ margin:0 0 40px; }
+  figure.diagram svg{ width:100%; height:auto; display:block; }
+  figure.diagram figcaption{ font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:60ch; }
+
+  .retos{ margin:0 0 56px; padding:0; list-style:none; display:grid; gap:8px; }
+  .retos li{ display:grid; grid-template-columns:26px 1fr; gap:10px; font-size:14.5px; color:var(--ink-soft); align-items:start; }
+  .retos li::before{ content:"›"; font-family:"IBM Plex Mono",monospace; color:var(--brand-blue); font-weight:700; font-size:17px; line-height:1.3; }
+
+  footer{ padding:26px 24px 40px; text-align:center; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-soft); }
+</style>
+</head>
+<body>
+
+
+<section class="cover">
+  <div class="cover-inner">
+    <div class="cover-top">
+      <img class="cover-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABfAAAAXwCAMAAAAq5JpFAAAACXBIWXMAABcRAAAXEQHKJvM/AAABBVBMVEUXS5MmVprx9Phuj7yLpclReK7F0uT/////zAAAAAA0YqGovNcROG7i6fJDbafU3euasNBgg7V9msK3x92/v79AQECAgIAMJkq/mQAGEyUQEBDv7+8BBQlAMwCLjErFrCUWRorf398wMDAUQoETPXdgYGAJHDefn58EDhwOL1yAZgAgICDPz88DCRIQDQBQUFDvvwCPj49wcHCvr68QNGUKIUBgTQAgGgANKlPfswAHFy6fgADxxAnPpgCvjAAmU4owJgCPcwBQQABue1xwWQBRa25DY3fUtByonDdgc2XivBI0W4G3pC59g1OalEB1bCVbZUoTFhKxkQmBawnRqgkgQGXBngmOLuY5AAAgAElEQVR42uzcO0sDURCA0RTKMGBrgkmKaB5r0CCoheT//zB3o7AWK9bOPQcCeXRTfCw7dzO7mgHQgOuZ4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4AMg+AAIPgCCD4DgAyD4AAg+AIIPgOADIPgAgg+A4AMg+AAIPgCCD4DgAyD4AAg+AIIPIPgACD4Agg+A4AMg+AAIPgCCD4DgAyD4AAg+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4As+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4AMg+AAIPgCCD4DgAyD4AAg+AIIPgOADIPgAgg+A4AMg+AAIPgCCD4DgAyD4AAg+AIIPIPgACD4Agg+A4AMg+AAIPgCCD4DgAyD4AAg+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwi+4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4AMg+AAIPgCCD4DgAyD4AAg+AIIPgOADIPgAgg+A4AMg+AAIPgCCD4DgAyD4AAg+AIIPIPgACD4Agg+A4AMg+AAIPgCCD4DgAyD4AAg+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4As+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPjwt3cjQPChCcdUfAQf2uh9nk0BwYcmep+5NQcEH5rofS4MAsGHJnqfJ5NA8KGB3r/0L2tbBB/q976LpbUtgg9l7bZj7+PV2hbBh7K9Xy/G3se9tS2CD2V7n6ex9xG3mWtTQfChZO8zD2Pvo+vfHs0FwYeSvc8fvY9hbXtnMAg+1O99zPtPO6NB8KF87y9r2/wwHAQfqvc+Ynj4Kg8b80HwoXjvv87i56PT+Ag+VO99xNuy/3Z9Y0YIPhTvfcTzg//NRPChXO/nMWG1H346bwwKwYcyvd/HtO5yI9/5TAQfqvR+6obO922dp/QIFoIPdXr/6xV+xGo4n2lzi+DDP7Y5jb3PT/burSmRJA3A8GVZEV4CLofo5iACC4QhSoThTsRcze7MHv7/39m2DigeINECEn2e256eVuh4u0wyv+wn7xffIz6CD6fd+3H6XPv94g894iP4cMrWe5/evh/8xykL7r9C8OGrBL+RbH7Ed+IWwYdTtVwPfj3Z/Ih/5RVD8OFE3a0HP0084iP4XgS+psGL4Nc84iP4XgS+qPl68G82PeLXPeIj+HC6rtaDf70p+DWP+Ag+nK779eC3ki2P+J1u1N9O98LEHwQf3nb5YhG/t+0RP+o5yYOxQc4IPrynsx780cZH/H7c8xXyuUDu50Lw4U3N9eAPt63pLOP9VibF99Bx7TqCD2+4WA/+dGPwWzGvmGSfP9cfb2RMm11vLIIPL52/WMRvbwr+r1+/i/T7yMfALfJBzmnnzjuL4MNLafD8tOxD20gnZmbL963sE4hRy5WMCD68pRk+P+0x+BF+B3fF8n1rVhwJfjwhls4Nc0bwYd0yPPiNGIPfvUrH2ffQf1qNusm+laWHfAQf1p6Pw8/aLiLclbm6wmVtf9Gs7951BB9eFTN8QnI9vjtQVlfyjt74acSljAg+rJkHB38a3a7Mcut9uXz//CG/JfgIPqy7Cg7+r1++j/JL77ff/nlE8BF8eO4+NPi9yHZlnpfL94v3FqAEH8GHtW6GBr8W0zz87qTIfavRSwQfwYfdg7/hlsObeHZlDpbFh7X90aaPmAUfwYcPBb+RpuMovuK78rDYcLZ5T5HgI/jwoeBfR1HQ7n2xrWh609422lPwEXz4UPDjGI5c7Myp3yZbCD6CDy8MQoMfxX1X2Tjn1qKXJIKP4MOuQucjx7Ar8/Gk1XTUThLBR/Dhs8GvxTscuTuZv32qVvARfKgy+LdH3pU5uOpsndgv+Ag+VBD8Rpp2jvdFrrZiNhLBR/Bhv8E/5nDki3nYLevPfyAxPA3Bh5fmYcE/4jb8yeqr67cDe5+NR37w5iL48Nz6JYejDQk9UvAvV19cqxeW+3Z2y2Gz681F8OH94DeiC363s/3Hj9ez8KOb3Y/gwykF/yijdFaXGG746eP1lLe04xJzBB8+HvyjbMt8uqAl7APb9jC7z3bgjUXw4YPBrx0n+E/3s/TDlnOy+8uvvK0IPry2jDn4d6svbBqyQae9yJZzJt5VBB/ecLEW/GFUwb9cfWBbD+n97TRbzrn0piL4sD349Zhm6Tx9YBtywLaXbcZMr7reUwQfPhP8Y9xh/lDuvw/Zj9nINmOO7c5B8OGTwT/CeOTlDss5tWw1p2PzPYIPpxf87lX4ck6+FzN9sBkTwYcN7sKDf3/AL+tyHL6cc5Ot5szvvJkIPmyyfqlt692qtg46rWBS7M/pbx+fM8s/rL3oei8RfNgh+OmmAfOHC365nLMI3HqfNu3FRPDhBIM/KJdzbgO33jtqheBDtcE/0MSCu+DlHFvvEXzYT/APMx95GbycY+s9gg87CQz+gQbir5ZzRrbeI/iw1+DXjhv81XLOzNZ7BB+OF/z934CyDH68t/UewYc9Bn/f4zLL5ZxFO2wv5rLr3UPwofrg3+49+MVyTr0XdsuJMcgIPuwn+PseiF/MzpluH6Vwk7qkHMGHj2hGEfx8lkLrZvvR2mzv/dxeTAQfPhn8jXcc7m0R5TL/IobbByHfthy1QvBhv8Gf7W8+crGaU58FzkHu2JyD4MMeg7+/gfgXoas5ySw7a9W09x7Bh1MM/vk87KRVsTP0sFP5EXz4Uh7Cg1/9UMpBM/haq57NmAg+fM76HYeLTcGveitktzhZOw14vB+1nLVC8KHK4NcPOBC/WM3ZfrI2SdrX2ae1NmMi+HCKwb8Iv7U2H53z4PEewYcDBX9Z4R9b3lJ+vf3xPslG53R8Wovgw8GCX+F85PvgWwzL0Tk2YyL48EmTwOAvKgx+uTln+y2GRucg+FCZ9TsOp4e48mpSXHMSMErB6BwEH/YU/APccdgtd/4HnK01OgfBh6MEv5JxmeUthiHL9zdG5yD4cPjg31QT/OKsVdAshZHROQg+HCH4lQzE75aTe+oBuzFnLaNzEHyo0OCAwS8336fD7blP2q29jO8Bwef7Wg/+bI83oJTL9+kopPeP2++vvD0IPuwr+BvvOPzc7sjisFXaCli+T5LH6TlN7w6CD4cP/mcH4hf3WoWdtsrHKYy73h0EH04u+N3V8n07pPePG3Q69ucg+HCs4H/8I9TLThp81UmxfpS66wTBh2qNw4P/4Yk2kx1235cbMm3QQfChYuuX2r4/76D/8eAvd3q8T9qPl5UvvTMIPuw1+I3qb0Aph+cEPt5n/7TYkIngw4kE//LiyXinx/tkNrRBB8GHYwc/dF98eTv580H7AY/3s9vGdXbbSdrRewQfjhf8YXDw7+Yvc9+6CU193nsbdBB82INlYPBDB+IPmq8f7zedtbp5nvq89zboIPiwD6GX2gYG/yLbcd+vBa7YZ3P2n1LfXN6fd70nCD4cO/idrf+z82w1pxX6AW0x8z5rvdQj+BBP8LfNRy7m5Vz3PtB7y/YIPsQS/K0D8QfLbDVnehuc+/xIbXZNuXsMEXw4meDni/dpo71j78cXk3PvAoIPB7B+x2F/Y/Dfn1+ZL94Hbbdfv9PKkVoEH44T/M13HL73KF4s3u+ymuNOKwQfYg1++/3g33d23Juj9wg+RBz8d29AKVZzhr2dej/qG5mD4EO8wX9jL003P1hbr+2W+8cJyHqP4EO0wX89LrNYzRnttJjTyHdj6j2CD4e1Hvz3F2amr4NfrObsshUz6S3y3Hcu9B7Bh2MGvxY+EH9Q3Gyyy1bM3rA4aTWRewQfTiT43YvdLi7MtnbW898yNg8TwYe4g/9sXOakU/yGafB6zqjIfdPJWgQfog7+9bPgn48DfsMb++4ft97LPYIPR9IJDP6zgfjP5u9c79b7q4EXHMGHY1m/oWoUEPzB078Rrd4Oc9JszEHwIaLgNwJuQHkI+c/fmIsp9wg+nErw8/nIz45qTcN6f/vY+we9R/DhNIJ/WwZ/nu74iW12r5U5aQg+nErwyxtQdv7EVu8RfIjD1Q7BH3zgE9vsbO3S64zgw9Gt33F4vTH443nYPw7PZilk2zGdrEXwIbrgv3+pbS99YRr6ca3eI/hwUsFPnqW+Xm80RgELOotsLqaztQg+nFbwW/X6onFTqwUPz8lP1za7XmMEH04r+LuqZcs5F15hBB8iMdlT8BuWcxB8iEvwHYc7adct5yD48B2CbzkHwYfvEXzLOQg+fIvgW85B8OF7BD9fzjFMAcGH2HQrDn6+nHPnhUXwITqhl9oG6WXLOWM3GSL48MWDf2s5B8GHEwn+dPaZT2uvLecg+BCt7rOTtv3G7POf1jYt5yD4EJ/B5OlC8uub3uc2Y+ajMe+9qgg+xObyfry6u2o4an9yc85smn1ae+l1RfAhstovV5dXTRe3FZ2tNUsBwYfY3M0rWrYvH++zyfdzj/cIPsRl0Kxo2b50k2/G7HppEXyISXdZ1bL92lkro9IQfIjMpJPlvlHZRSf5WasHj/cIPkTlPN+YM2xXlXtnrRB8iNHgKr/GsFbZ472zVgg+xOgiX80ZVZb79tBZKwQf4lNsxWy0K169d9YKwYeoFFsx672k2tV7Z60QfIhKsRVzWt3ifbH33uM9gg9RqXwrZrn33uo9gg8xKbdi9qp+vLc5B8GHmBRbMfsVrubkk3M83iP4EJXKt2KWgzEdrUXwISbFVsxFdVsxk9rU0VoEH2JT/VbM4lqr9MrjPYIP8Si3Yt4mVS/nzA3GRPAhItVvxSyDb+49gg8ROc9Xc657SeXBb3p1EXyIRrf6rZiFoeAj+BCR+05+g+Gs8t4ndcFH8CEa5+UF5TfJXoK/9BIj+BCDwUOR+7Se7Cf4xmMi+PDK2af8/P0Df+RFp+x9q7eP4PfT9O9ne/Lbz1/+/PHjf3/88bu/PAg+3yn4Z//6585/4iRd2ceCTpKkewz++jf/81f4dR/B55sE/+y3v3Zdz1k936fXyb6C/4+zw/nt54+/VB/B5xsE/+zsx25/YHPV+9bHpuf0Goutwf/b2YH9+0/RR/D5+sE/++8uqbt/WtD50DyF28dLC9vRBT9b4fnff/x9QvD52sH/P3v315W2ssZxPHcka3kJiCKt2FoqWkRttVSgiFZtu9t9c855/y/lCAkgAZP5FzITv7/bvUsjK+vT8ZlnnvEfxKF7VtA5VFncT8dgBomDlE/yAh/zCeCT4oPv93/IF3SO60qL+/TifzlH8Ce/7/zgpSKATwoMvu//kS7oSI5UaJ4fL/5skAa+n2d+3fJaEcAnBQbffxQp5C8KOrtyBfxWJVjKhc3gP5H/hx1cAvjElrzbnsVc+VrAuHlBR+p6q+b5bhBLUv2/lT/4rPIJ4BN7sjWn02A/euoZrO3o7zw40Vjch78gpIzD9/PPr5+8ZgTwSVHB9/2UVe37COszrcV9ak3nCfyRb0Pe0rFDAJ8UFnz/MenvDK+3Ck7Fqznl2eJ+PByK13SewG/4duQNbxoBfFJU8BMK+e/D+v2xeHNOdBd5cNXuPX1yR7imYxH4KqOGCAF84gb4LxXy96Py/YHE8v44WtyHH3wZW+KfJE1HtgZ84X5VQgCfOAe+319XyP/8Sdb7enjI6q43+9x4Tec8CfyxPeDLDZ4gBPCJQ+D7/t/4Xza/70Tc+9Z0r3Y0ePaxsZrOcRL4bYvA939R1iGAT4oKfvxWlPl9J8LeN6ebtZ1ltoVrOraBLz9BmhDAJ66Av7ym/RDIel+dLu8bveUPFa7p7NoGfmq/KiGAT5wF//maVtr7k4Pp8v5m5UNjNZ1K7hde6ZS5CAF8UhDwFx3ost7Xq2FvTnf1Iy/Fwa/ZBn7yCQVCAJ+4DH7UnCLrfdiL2Rmu+8Shy+AjPgF8Ulzwp2eOJL2vH4a9mN21H9h1GnzEJ4BPigu+3/8h6f3FdLP26kWtx06Dz5wFAvikuOAviu5C3oe9mEn7rdfLS3zXwKdXhwA+KSz4ct6XV49axVNzHHyfyw8J4JNigi/n/eS41LpezEKB32deMgF8UkTwJb1vTpb3Pb/Y4AvdCkYI4BPHwJf0vjTpz0nx3h84Dz6tOgTwSfHAl/V+ssC/TP1U98H3GatDAJ8UDHxZ74UW+IUAnzI+AXxSLPClvRdb4BcBfP8tLx8BfFIg8KW9F1zgFwJ8rsAigE8KBP7c+0Ph+fdiC/xigN+nU4cAPikK+JfplxAqLvCLAT6dOgTwSVHAn3vfEvZedIEfA7/pKPgcuCWAT4oB/sz73ZOS1AK/Jg9+2VXwH3j/COAT98HvNmbbtRLeTxb4Df8Vgc8UNQL4xH3we6PZ6OJ6KYMFfmHA/8ULSACfOA7+YHbr7KEE9xIL/MKAzxKfAD5xHPz5uPozGe8lFvj+KGPwe7XVsMQngE8AP572bLv2Qob7+qn4At9vZAx+O1ibRuPuptZliU8AnwB+uF2r0p4zu9WwZjf4Ya7GNz2W+ATwCeB3R7LTFObL+8RbDS0Cf4r+3YCpmQTwyesGf3AlO01hsbwfiRuaO/iTx71mhhoBfPKKwR92pKcpyC/vLQE/CDptE/V8xiQTwCcugn8tP01htrxvSJXF7QA/CK6G+l/aX15CAvjEPfDn27Vl2eV9yqXlKeBXcwP/6R8q7UV+n5eQAD5xDfzFNIWmuPctheW9VeAHHe0GfbZtCeATx8CfT1OQ2K5tVlSW93aBHwS6m7dMSSaAT9wCfz5NQeJ07Zna8n4D4L+Zfz/vt7aOtr/sfMpSfC5CIYBPXAL/uiNdvlde3j9lvDHwZ9nf+vptLyPxqekQwCcOgX8nX75XX96vlFw2AX643P/ywkq/Rk2HAD55HeDPt2vFy/c6y/v8wJ+Y/2HdOr+j1atDnw4BfOIK+PPTtWeSy/ux8kia/MD3vP3tNeQ3tJb4XHVIAJ+4Ab58+b51PF0VaxxayhP8Cfmr4mudwHrDe0gAn7gAvmz5vl6dru6DsU4VJF/wPe/dzsqZW+bpEMAnBQdftnw/415zJkHe4HvettFOHd5DAvjEevAly/dz7nU715fBP8wBfG9rz+ASnyI+AXxiO/hy5Xtj3MfBr+QBvvd+z1wVnyI+AXxiOfhS5fvmoTHu7QA/Lv6YIj4BfFJU8KXK983DqH2x5vtFAf/ZdzdNlyI+AXxSTPBlyveGubcFfO/r0mPcaPxA97yJBPCJteBLlO+Nc+/7QzvA93ZM1XRueRMJ4BNbwRcv35+Y5973a5aA/85UTYdrrwjgE0vBFy/flyvh/3hpknt7wF9ux9fo02HXlgA+sRP8Wfm+Uhblvuf7xQR//3mnzh3z0wjgk4KBfxOW748v8uLeIvCXlvgjLkEhgE8KBf51uLw/buXHvU3gL1XxOWtLAJ8UCHxR7ptZcm8T+N43M/eg0KZDAJ/YBX5NkPtSOESh0+76/gbAD/IE/7OZTnyGKxDAJzaBXwt7c3ZTT1qdHGTLvVXge3tGdm3/4VUkgE+sAX/GfTWtE7N+HuhdZ+UY+B+M3HtFXyYBfGIL+MLcl8ra11k5Bv5nIyOS6cskgE/sAF+c+/ppWNvoZuq9P7AI/H0zbTq8igTwiQXg98bRxVLpUzFb083aq5qfdSwC3/u4eJCB+k/0m3eRAD7JG/zeZTRFIX3ofdSL2fb9VwX+FyN9mTTiE8AnOYMvwX3Ui9kY+K8M/M9GpukAPgF8kiv43XZHmPuoF/PG918b+M8O22r8csPJKwL4JE/wo2O1Itxn2It5bTv4zzrxNcDn5BUBfJIf+FFrTuVE4MLasBfzKotezEFgPfg7Jk5eAT4BfJIX+FHxPnUkZta9mIOOAPjNfMH/YuLkFeATwCf5gB8V73erAtyXzqabtaNMejG7nUAA/HK+4G8DPgF84iz40YW153UB7qNezE4mR626o8AB8LeYrUAAnzgKfm0UFu+bIsv7agjdtY51L6cRAD4hgE+yAj86V3tcLgkv7zs3k+E2l+a9vwycAN8DfAL4xEHwu23BEcjPqvfjbjjN7Nq093cvnwgb2Ql+B/AJ4BNXwJcp3kfNOeFczJrmJJm1DfgJR4AbVoH/0cD0NMAngE82CX50odWpUPG+dDFf3s/AN7txOwycAX8H8AngE7fAD6s5B0LF+1L9cGmSQjigfmRQ/P90AJ8QwCfZgD9d3u+2hLiPjtY2erEbScxt3D78N3AH/A+ATwCfOAV+Ep3rmzHbq1dQmZqd1r/fMgL+cCPgbwM+AXxSUPDDwZijwbo7B4eGvPcMgL+rPM0M8AngE8CfNmOumRM2B79jpFXn1jMBfkV5mhngE8AngD87axW/xXBxq7iJjdtbzwj4p8onoVTBHwE+AXxSHPDDW2sv46ovwDcwY+GvZwb86tM/TJsFn5O2BPBJYcB/ftbqJfB1hsJP8+gZAr+lXGPJAfy/vIsE8IlN4Jefn7V6EXzNGQsPninwy0//qbcJ8I8Yj0wAnxQL/PAaw/W31i6BrzVj4eG7MfCbyo34bxS/RMAngE8KAf5J7KxVAvgaMxb63z1j4JeUf9sAfAL45DWDX028pXsZfPVWnf69ZxD8Y9VGfFXwudOWAD5xB/yXxiK3Vs9aJYGvPGPh3jMJfiUIxpvQ9+vsQdrq4N/yLhLAJ5sF/3htLfx8N239+r8Y+IozFm49o+CfqxZZVLt0NMD/wbtIAJ9sFvzgYnUMciUarpa0//n2Q1x8lRkLfzyz4FdVryRRBf8a8AngE3fAr8QW99XjiPubbvKxoZ3YBynMWHj0DIN/odqIrwp+DfAJ4BN3wA+e335SPpyV5NMke+vtfwo0N24fPdPgl1UNzgF8XkUC+GTj4J+WZzmbLe7b6aeX3nre+73YJ0nul84a8A2CX980+D7gE8AnDoEfz1ioGD+ZBHMU/6N3Gt4bAb+kuo+6efD7vIoE8Em+4Iss7hejv7bjf1xiD3PRgG8S/MpmwWd2GgF84ir4jaGkV9+UN25XvDcGfmMD4O+oFbEAnwA+sQD8zmWtVutJe7X/Mf45ohu3P71MwK8qjqhXBF+jDZ+DtgTwSS7gX113FReo7+Ibt4Lc3nrZgH+mWFdXBH8I+ATwiVPgp7ZgJlUkVj5OaMbCXy8j8Cd9md3s+Z11pPbUwacNnwA+2TT4Keer0kvQRwozFh69rMA/UezLlAR/VsDS6Mq851UkgE82B77WrSWLPceVGQs1tf1KI+CXFOssauBr7NnShk8AnzgIvvdRslUn3oBvFPxdtZ3UN0rf4Y369/fAm0gAnzgIvuSMhV/fVR5MFPyK2qRmNfA1Svj/8CYSwCcOgi83Y6F/r/RgouAfqjXiy4Efnbu60vj+aNIhgE+cBF9qxsK92oM1xO/pusrc3y/aXfhrziEQAvjEBfAlZizcKj6YKPgttR9MDvwd7YqO/5s3kQA+cRN84RkLt6oPJgr+pBF/kDX4e7qDdPxfvIgE8Imr4AvOWHhUfjBR8BUHJEuB/057Fj57tgTwibvgi81YeFR/MFHwS2rdklLgf9Ze4C/d7UgI4BO3wBeZsfBCA75Z8A+UNlOlwN/WXuBzzpYAPnEZ/NVWnWsp702BX1E6ACsF/kfhmUHcfkIAnxQS/LQZC/3fOg8mDP65UrFFBvx9qTnQvuxeBiGAT+wHf3XGQk/kwJVh8KtKP5kM+Eeag5GTm5UIAXziAvj7ewkzFn7qPZgw+OXMwf8me3vvar7zHhLAJ26DnzRj4VbzwZbBP0sGv5Yl+Pu6HTo0ZRLAJwUAf3Xjti0Oqgz4lVLJ7IBkCfC/pk2Ho6JDAJ+8BvBnU2birTqP2g+2DH5QTwS/nSX4n7S9p6JDAJ8UAfz1MxYe9R8sBv5FYl/mXYbgHwWXut7To0MAnxQC/JUZC1e1f38beLAY+Icvg3+qUmIXB///7N1fUxvXGcDh3sk7o0skIZBtCYFAYMx/G6hJgyd2xmmaadrv/10KtM1YG0l7BNJqz9nnuSS52JzR/MKId9/z+/2rl3KdLYJPEsH/8x9uD/rLeLBc8I/mzmX+uLrg//Pmxb132RWCTyLBz+9Y6PWX8mD3uf+NvJsZ/LPn/KcFBv/b21cv50+2CD6pBP9xjOW73u8u58HucsE/mzuXebOK4H/97Zcl5N5mZASfhII/sWNhd1kP9jELHMwcPGcQvyD4f/vy5tdPr5bDL/gIPgkF/7sdC+OlPdiH3K/4c+cy/7qc4H/98uXbmze/vl1W659WTJjJRPBJKfh/7Fi4Xt6D/ZCFDmYevey22RXzCz6CT1LB//+ozmiJD3aaC/75vEH815XtvW/wEXwSC/5/dyyMlvpgwYOZ7Sz76Bd8BB9KCv5frnqjy+U+WH4wczAr+Psv/W9bobc+gAg+yQV/+Q8WPJi58dL7B1fIS7YIPoIf8GC5wcyTpSuQxusAACAASURBVI7plOM3nz8EH8EPeLDgwczKjukYyUTwEfygBwsezKzsmM43Hz8EH8EPebDgwcyqjum46ArBR/ADHyx0MLOiYzq/+EIHwUfwAx8sdDCzomM6X334EHwEP/DB8oOZ+1GN6fzDZw/BR/CDHyx0MLOKYzq+wEfwEfwFHiw3mLkV0ZjOz77AR/AR/AUeLD+YuRHNmM6nv/vkIfgI/gIPFjqYWbkxnU/+YIvgI/iLPVhuMHMnljEdK3QQfAR/wQe7D9yuULExHTuREXwEf9EHuwsMfrXGdPQewUfwF3+wj2HBr9SYjt4j+Aj+Mx7sQ1jwKzSm88n39wg+gv+cB/shLPjVGdMxn4PgI/jPe7DTsOBXZkznZ/P3CD6C/8wHC7wDpSJjOv/yfi2Cj+CvOPjVGNP5967PG4KP4K84+FUY0zn9rPcIPoK/8uBXYExn8/3Ypw3BR/BXHvy1j+mc/pTpPYKP4JcQ/HWP6Wx+1HsEH8EvJfjrHdO5+Zz1Ln3UEHwEv5Tgr3FM5/Twfdbz91oEH8EvKfhrG9N5zH12oPcIPoJfVvDXNKbzlPus2/c5Q/AR/LKCv5YxnbsPj7nPrnzKEHwEv7zglz+mc3P/49Mz9YznIPgIfpnBL3lM5+5/tff1PYKP4Jce/PLGdO7uP7//44k6PmEIPoJfcvB3ygj+6ebh6/ffPY9f7xF8BH8tX+msNPg3m4efcxcu9vx6j+Aj+OsJ/or+aLu5efjhdfZno6FPF4KP4Jcf/CVP6dxsPjg8/On1tNI/6fo2B8GnusF/jk61Hmx+8Es0avpkIfgI/nqCv19i7XtXvsxB8BH8tQW/XVrub8d9nyoEH8FPPvi31365R/AR/PUGv7X62Hc7vrhH8BH81IPfE3sEH8GvSvCPVtj6S1/jIPgIfnWCv5LUjzpNrUfwEfxqBX97md/Vd287naavcBB8otNvvsRw3Q8WGPzH966umy/n84Lgw7osEHyHheBDDYJ/JvgIPtQj+O0sO3ZYCD7UIPjnWdZ1WAg+1CD4LcFH8KE2wXf9FIIPdQi+68QRfKhP8C8dFoIP6Qd/8PDPvDSF4EMNgv/43pU7ZhF8qEnwnRWCDwkFfzDnvitnheBDQsE/mx38A2eF4ENCwT+ZEfwT710h+JBW8LPtme9djZwVgg8pBf/Ci7YIPtQj+HtW6SD4kKiDyeBv2Y6M4EOirnK/4r+bGvx9Y5kIPsRuNxf8c2/aIviQqN5k8HemBn/b8jQEH6I3ykJett0ypoPgQ+wus5CXbVtZduusEHyIWj8Ledn23G4FBB+idxvysu2ZMR0EH6I3DnnZ1pgOgg/xG4a8bGtMB8GHBAS9bGtMB8GH+HVCXra1LxPBh/gFvWy7Z30agg/xOw542dYlhwg+JCDkZdvHMZ2ho0LwIW4hL9sOHn7edFQIPkQu5GXbzJgOgg/xC3nZ1pgOgg8JCHnZ1pgOgg8JyL9s2zamg+BDonIv27aM6SD4kKhOcfCN6SD4kIL8y7YzxnSunRSCD7E7Lg7+TpZdOSgEH2I3Kt6fdmJMB8GHBORett2YPqbTc1AIPsSuWbxc4eLh530nheBD5PrFg/jvjOkg+JCCgGsOH34+dlAIPsTuuHAQv3FkfRqCDwnoTgT/aMYth7cOCsGH2N0WD+KfZ9mBg0LwIXad4gXJZ9anIfiQgOviQXzr0xB8SEGzOPjWpyH4kGDw29anIfiQqoDgW5+G4EN6wZ86iG99GoIPKTgoDn47y44dFIIPsZt882prWvD3zWUi+JCAq+I3rx7nMnedFIIPkesUX4Gy/fDzSyeF4EPkxsWD+I0t69MQfIhfbhB/f8b6tJGTQvAhcsOAQfw9c5kIPiRgMvjnDdfaIviQqF7xIP6FuUwEHxIwOYi/03CtLYIPtQj+1EF819oi+JCCTkDwXWuL4EN6wd9wrS2CD4kKuALl8Vpbc5kIPiQW/KmD+K61RfAhAf2A4LvWFsGHFEwG/6ThWlsEHxJ1XPzmlWttEXxIQcAVKI/X2prLRPAhdqOAQXzX2iL4kIDcIP7AtbYIPiTqOmAQ37W2CD4koBnwlY5rbRF8SMBuQPC3zWUi+JCAgOC71hbBh+SCfzQ9+K61RfAhAd3iF69ca4vgQwoOAoLvWlsEHxJQvEvHtbYIPqQX/Pb04LvWFsGHmgS/IfgIPkSvKfgIPtQx+BuCj+CD4DsrBB+idi34CD7Uw+R65G3BR/ChHsFvCD6CD6m6EnwEH+qhG7A7TfARfEgt+DNW6TQGgo/gQz2CvyH4CD5EL2R32lPwHRWCDwkFvy34CD7UO/htwUfwIXa7ocE/dlYIPkQtbJVO2xWHCD7UI/jutEXwIXrjoOC3BB/Bh9hNrtIZzA5+x1kh+JBQ8BuCj+BDqoJ3pwk+gg9xm9issDUn+GNnheBDOsFvWZaJ4EO9g29ZJoIP8cssy0TwoYbBtzsNwQfBF3wEH+K2a1kmgg/1MLlK58KyTAQf6hF8yzIRfEjW2LJMBB/qIWx3muAj+JBY8Bu+0kHwIVVXocE/cFYIPkQtbHeasUwEH9IK/szdaReCj+BDPYLvTVsEH6LXCw7+0GEh+BCzib/Znjdsy0TwoRbBn7VKxwUoCD5Ebyj4CD7Uw+Qqnf2GO20RfKhF8DfmBb/jtBB8iNhlYPBbgo/gQ9wmV+m8E3wEH+oR/Ma84N86LQQfahD8E+syEXyIWzcw+PYjI/iQUvBbgo/gg+DbnobgQ9x6gcHfF3wEH+IWtjvNfmQEH9IKfnt+8PuOC8GHaA0XCb7taQg+xCt0d1pjW/ARfEgo+LNX6diPjOBD5C4XCb79yAg+xCt0d5r9yAg+JBX8Ob1v7Ag+gg/1CL79yAg+RK27SPDtR0bwIZHg7xQE3/Y0BB8SCX5rXvCty0TwIWo9wUfwoR4mvsLfKwh+z3kh+JBG8Nvzgn9mXSaCDxEbhgfffmQEH2I2uUrnTPARfKhH8DeKgm97GoIPNQj+QPARfIhYJzz49iMj+JBO8BtFwb90Ygg+1CP4tqch+BCr2wWCfyT4CD7EK3x3mv3ICD6kE/xWYfBHTgzBh0gdLxZ829MQfIhV+O40wUfwIZ3gt+cHfyvLrpwYgg9x6i8Q/IE5fAQf4tVcIPj7D//G0JEh+JBC8OdvVtjLsmMnhuBDDYJ/ZCoTwYd4dRZbljl2Ygg+JBH87f+wd27NbdtaGBXvI7K8SDptpk0e3KZpkkk7mSY9M5n+/x92HMfxsSyJ+HAhBdJrvcWxSRAkFjc3NkFS+IDwAZ6H8EczOp9I4QPCB1gwFmun/UYKHxA+wII5Wkrnw5jvX97+whc6DBA+wCqEP7qUzufbX/idDgOED7BU9LXTPm23r+gvQPgAi+Uohf/RkML/l/4ChA+wDuH/aPi+ISl8QPgAi+V47bSxF6/+QwofED7AkjleWWHsE4c/3f43/QUIH2Atwt++5eMngPABnofwP4yl8PmAOSB8gOXy4onwL66I/zWF/wP9BQgfYDUR/vaXl6TwAeEDrJKfxRD/Iyl8QPgAy+b1U+Fvf730/XJS+IDwARbNH0+F/+ac7/8khQ8IH2B9If7nM8L/+/bnN3QWIHyARXNSqLP98PfLMyn8d3QVIHyAZXPzanvKmyeLLLzZbl8R4QPCB1hdiH+3ysLbl0/K8PmAOSB8gKXz11njb39586hg5wMftAWED7B83m8v8ePbx7O2lOkAwgdYaYh/F+Z/+vXhi7Z8whwQPsDS+f3ddoSPn++nbSnMBIQPsALl/3GuVufdfej/4aeXd9O2fPEKED7ACrj5cprYebd5//NDneZvTNsCwgdYCz+cLLPww2bz+r+vjv4NgPAB1sDrF8dh/t007c37d0f/BkD4AKvgn38fG//m2w8fUvyv6SBA+AArCvMfJXEepmnvU/wskQwIH2BdPMzVPp6m/ZriZ9oWED7A2viexDmapn394q9/6BpA+ABr49tc7dNpWpL4gPAB1sjXJM4N3QAIH+BZhPlfyOEAwgcAAIQPAAAIHwAAED4AACB8AABA+AAAgPABAADhAwAgfAAAQPgAAIDwAQAA4QMAAMIHAACEDwAACB8AABA+AAAgfAAAQPgAAAgfAAAQPgAAIHwAAED4AACA8AEAAOEDAADCBwAAhA8AAAgfAADhI3wAAIQPAAAIHwAAED4AACB8AABA+AAAgPABAADhAwAAwgcAAIQPAIDwAQAA4QMAAMIHAACEDwAACB8AABA+AAAgfAAAQPgAAIDwAQAA4QMAIHwAAED4AACA8AEAAOEDAADCBwAAhA8AEEx4RZHfcigf0dz+YF8UHcIHhbow0/lepX47UJpYFInanqSY5JC7oI3cSMdce7eo9jmziecO6gnOhHR2C7fu9iLxGUJZ3pRtZaAvh3zXIfxIyCuB0rIDlG1W/s0afK5W78OWmlgVanv20uZsTVhLWx1C9lpVjV/+pbCFdO8z/jybGNGQqCancOriLsvL1G5H7SHf1Qgf4fvYtO/WI/y+muBMSHa9HYyxCb+qDgnCj1L4yS4vnfeWlnmB8BG+q01NblmQ8JNJBuhO3GodnfCrdIfwYxN+sht6/132a5M+wp9P+O5BfmTCz9QnY6sB2opb3ccnfPcgH+FPIvx6fwi320NWI3yE7yB85yA/MuEfpjhc/bYZo/Bdg3yEH1749b4Pved+XyN8hG8v/KqsVyB83YJ63FvrfZjEKPyqahKEf33hJ1k/zc4PGcJH+NbCd6vpiEv4OwsJyodo8QiexSn8qi0Q/pWF3zXpdLtPmxrhI3xL4TsF+XEJv5kg7VrYxFqRCt+l9hbhB7yYduXULSgLhI/wc9tIYb9s4dsEUWrCvbXpwGiFbx/kI/xgws/aagbaDOEjfOt8YLJg4RdWh5qFO7MP7KIVvvW0PMIPJPx5dL985SP8awjftqYjKuEPdkeq3Ntqu8xrE7HwLWtvEX4Q4Rez6X7piR2EfxXhWwb5UQnfcmwNYWds724iMQvfLshH+AGEX5fVzDQJwkf40wX5MQm/sz3QOtA5eEQXtfBtgnyE7y/8vJofrwWUEP5zFL5NTUdMwt/bHqb5hFhXTg9xC9/ibWCE7yv8rq+uQpkgfIQ/UU1HTMK3H1+70LcQcc2GKwpfrr1F+J7C3zsU3pfl3fr338nzoXSYA0gLhI/wpwnyIxJ+7XBfGz/IxGHI1rELX33mR/hewk8ay7NS5pc+L9Bl1out7RE+wp8kyI9I+JnDQY5fYo3DFvfRC18M8lck/PnH7iaxUnQ7mC7wJLN7U7dB+Ah/ipqOiITvsgphWoecsb2bFl2A8Ks0Q/iTNrS28H06iDPpu8OqjY/wry18paYjHuEnTod4CDon8JVkAcJXam8RvntDLd7esHpZqh7S9Rof4V9d+EKQH4/wd25HWAScsb0jW4TwzbW3CN+5oXo+x/rd2CRfrfERfgTCNwb58Qi/cTzAkDO2pmeGiIRvDPIRvnNDZd+7GE5/l2tA+Aj/JMTwnIWMR/iuq89eOr7BVaSxCN/YIePVewjftaFq6OH6mbmdeqnvED7Cf3rRmX9ltKYjGuEXrn6+sKRO57o9ZZjNIvzBPMc3VnuL8B0bquYW3VMu6pRwmiB8hP90jtEcj4wVbkcjfOeA/MLAKwNvb37h90IqeaT2FuG7NVRNBfqsbJmI9ToHhI/wT+JR4Qn0cpAfjfBNuakR+Z17sh4p6jepNo1E+FWiTB5eDPIRvltD8+l9r6eNCoSP8E/GrHDxXKzpiEX4xgzMSOKztAvTjI/sXSTCL6RykbZD+AEbKgb4viU0YiFQifAR/mmjlHDhQk1HLMI3bmYsdZXZJIga4zEPkQg/F72QI/xwDdWu597bOGKpf4fwEf5xgKc+IJ4P8mMRvkls6dhSOydL6tSjTUmVLo1A+I0aCZ4tF0H4Tg1t5/Kw9ppIg/AR/pkNSCnBc0F+JMKvhUaUurhK1w19o45D+KX+7J8j/DAN7ebTsHRrSRE+wj/nUsn4Zwq3IxH+XlBTISt6N94SY0HQPg7hVxbZ3r5G+CEaGvIDbkF21SF8hH/u4tPWmjyp6YhE+MYytWz8l47amLTjv2i8u/QxCV+9me8RfoCGSvWSYcJubTnwDOEj/LODNpNmgZ4Wbsch/EQKdGpxB7lhO+YTk8Qh/MI8Bf34PNUI37uh0uNUoPL41v8qQvjPV/ibTptvOg7y4xB+pnXTIE201qbka+IdVs0sfPFmfhzkI3yXhlYzSric8eaC8Ncn/E2iRYJHNR1xCL/R2jBWI50r4+h++fzWd5TNLXx1xa3HX0NF+KsQfonwEf7Fq09climPTfip2OKRJ4GHdUcK82YaX+fMLny1iu9R7S3CR/gI3+uiaaMXvrpIR59EJfyd/PetuVSuNZ9Aszx30Ql/02nvZjYIn5QOwg9y0VTxC18N8h/SOlEI35yKUsL3wjgd8L0Vna7NeISvdvX3tM4swm/XJnwmbZ+H8LPVCH+TSIFD2skX3fTCNzaiVzzZm9L8pS7sNEbhi0H+/eNbPYfwq7UJv5zgNncBrSxzj/Anaex6hL/Z7FPd+GUEwu8sjrE21NaMNef/ZYvmxFcXo/DFafl743s2cYoYSNpmek3hz/g2VDbfrhD+HMLf+1/dbsLXajrSTJu/nF74uc2fj5dmanU8wqkZohT+7YWq5AG+LaDZ+zVxiiExxbwASysg/KmEX899IeauXpGC/Ey7K00u/N5GK2NKz8YO5/Hng8zDuo1U+FqQf/f4dphD+PXKhC9quPZXzm6+WwvCd7y67ZbQGK4ofC3dm0kHPrXwzbnMg/gk3I8N16OXqVI/k11R+Nq0/Ffj53MI325IHOIXvnY9+0/bJu0E/Yvww06g2K1rUV5T+Oo6PMn1hW9+yNirDwSZehSN5T5jEr5Ue3sbgxZ+TbzakDhcVfjaYfsvcaPVT7cbhD8NUvcPVptM/TfpI3wlyL8NBPurC99sgU4NPVO1BeYJsz5e4UtBfp8knk2cYEgE6LfJ80Ta6+qp52Sq+AnnHcKfiDT4/bYLcHXnflsYhOu2ubbwE+tuF78HOpYLFeK4JGLhK7W3vZA0yOcdErslCF/8xqGf8cUP5y7pC4cLE762VonNSR4C3MI9hS/UdKTDtYWf2cpa/Trc6Cyb+cEmi1n4yrR8f/BrYul7Zk9ogm9xipngnXhJeUTfashSI/ypGFzixACBQjep8DfiemrXFP7BXr259THk9uf7ELfw1fXU3JsYfEjU01gueOnPQey9wdE14iIZS3rpannC196CsIg+RCltphX+7WlIIxe+uX0nyRWxwmEs8bDzOjUxCF+svXVvYvAhoYnUuvI8uPATVci9Uw1Nrp62ZoPwJ0OMPvpEPfogSboAwlfXU7uW8M3m7Z2fuscSZ17ZtjiEr4eKTk0Uh0SrDgnxBnK4uvAtcoaNddIlk4MV2TUI34U26FnoxEtmP73w5UWTryN8czpzcM4vjx1B6RNgRSJ8l+SWRRPDDgnR9/YFjxO8zdXpI8ZO+bruF+f7pQlfTXa3RahrUMhXhhG+Z5A/rfBbp7/trI7gXC+bq//TBQjfM8jPgwwJZfpSn0xKIhC+jfGrgzp7W+cWqcjF+X5pwq91AZo+0KrfxsvNLML3S/dOKnzB3I4PBobJNWHH3QKEr2vZvokWQ8IQlteDfP3Zv8M6yXoNVjfStNkZ9dztrW7Ny/P90oRvkyVoh+Ky7RsLt2ZzCd+npmNS4btWyyR6L6fJ/9g702VXQRgAy9oZGDd8/3c9tW4gIKjg0Tb5d++pCiR8xATiwWRx8wjgx9VTO2Q7cg/ziO9tle1CHbsH8COrjGuEblrv6zpTcqeOZFEA8DNLtRODkjKmo6RihHZlQpQmBf4JJz8r8MMs8KQ5VHT71VGalc8AfnF87y1N9dY7QJ837zkxNxqx94yQO7l5oEhNHuAfyo/wjtL2PQRiAEI/AA3fvx5jUgDw7xPFt8Fw9MLqSuAXor4f8MXxQYod9fp4ElE8A/jH997S9Mw7JxjdB/hnXp1OSV0VAPwrpL5Ysaq4FPhH529O4If9dK+bHbnx9cxao54C/KNp+aDt8IunxJHTq9mAX6Q4tphBKQD8VHlbfKliZXE18I/t6cgJ/PrEKMUxrjuxvvPHAP/g3tug7aD6/qzLB/w3xK52Al+8KgD4l4Xx8b14nxz4xwKT+YAfUdCRnIwwizMhPPQc4B9y8sO2cynxj6UqcwJ/1875BFKSogDgX0j88l7GnR74BwKTGYFPjjP3/Oi0x1ebOwL/SFo+5gzHdcQ/WDomL/ALRC9zA7EqCgD+pYL4rYw7A/D3ByYzAj/slG6VpY/YmlmeK3LcPQr4+/fextgOkhfR7mj1yczAvwz5JUUFAP9yuWRjQmwePgfwdzv5GYEfvrDZfN0+ERCKYi5+FvB3O/lxtkOu4B0XxV2Bv+ss5S8Gcx4N/KLK7+TTlLZ8YJT3hXvzAb89yzx+qukRW/nbhwF/597bSNsRXe4ZcWbn+QXA72016xhIVhQA/P+SzMv5jnJLmYC/b09HPuBHBAsCNha4evtFKuKonXwa8Pe9okbbDsvqBeFTwYxrgL+zFM6u932FigKA/6/Iz2bfeFd1vWzA3+Pk5wN+eNUJHbyUpxLjETmA5wF/z97bHbbDsoXyy5O8uwr4/dA2yZlfU1F8hzwZ+L1qcwQua4KS2/LRUY6OzGYDfoSHHcptbx6dCB7bjGBY9Tzg73Dyd9kOUnUOB+j0d7ovBH5q5nP1LbR/PPD7sEfi5fyAdnMCP3pPRzbgN0d5G/n44MhE7Aptngj86LT8XtsRiiemfYJgxrXA70eBdAm8wTJJ5wH4af181aVx9OvmkHazAj92T0c24IepVIb7UJ64OOLoVv1I4BeRe2+PJPzbJomjjzuV6Ezp5cAfyCDLUzgQxbfJNwD/Q4WW8jPUrzvKUEZbPjPKUU5+LuBH4DbidFp7BpcRc1Y8EviRTv5R22FKnnD1S05T8u5fgP9Z+xjtdi9+vFGs+Er5FuCPuiW021notO6rxVYFCMhXimBq55zg7xnRfhvuqpbKmFHgnComvtgevgr4C/hZS+lbw72UFuF7ef9ZMQA9yM9I1dd9p7ThTunef+qLxIvvHgQ0DEK37r58/+dv4OArgQ8CAgICAsAHAQEBAeCDgICAgADwQUBAQEAA+CAgICAgAHwQEBAQEAA+CAgICAgAHwQEBAQEgA8CAgICAsAHAQEBAQHgg4CAgIAA8EFAQEAA+CAgICAgAHwQEBAQEAD+f0nFekGgy7Uo+hEBIwECAvIFwGf6Z65qqaC+vT44Kb8iRIa64cT/i7HQOqggnScTHPO3oJgfPUCa890g3F3mHizpO4BfSez44DIBV3+UbhiRNONBg1/b4+c/+AfiWrHx1hqK6vOf0LyF8PPdoP4vkQMVHg985v1cp2xBrcX8MdpEAAbg/xvwX+UGreQLgB8Efi8dUOHJwBfd5veX1a+oD6n3O+sWClKNRBbgt5T+cyhCUKoyOn/Eq509wH/V3p8ox4fOyb+P6h2B/6ZC6zaA30pyPRP4LQ58ivhXeP95oXdObzT4NamelAP4nyWp/s+XbRIMmZzXjjwPfO89ll9Qc1Tl40w5P/DfswE5QYJ/Ke/0SOA3wW/P/4j2xvcc4bP+MhlNMwC//fdgBMJZrYWeDHItOHev6YXANvDV1gU/DvwXZk4DKAH4txZp6JA3w+5DXv4e8MfuuuI2H1NO57pkAL78d11NRM10+7P5VA34Tk1OCVvjIaMauqeZcjrgczpLv/XHDAYQ5wj/UFDngcDXeI8bfSKgVpYAfC1YkTCVkQH43bcDv0wIfCy2HR8AvtdGBeE+4rON5RSAfzveY0e+rZW/BHzutdcy8aTPAHwyXND83/CNG5nKvJZ6OLqiA9+R61AvF/Dp65V4rX868HtFa2ujnrpFLwjp3F3URgpmUCLFPwP8CnuQ2SYN4OcB/hDy+NekLbUQkHQ9wamStq77mH+lZpynfqjvQnPZqODOdyWS1QAA+AkQF8hjDcjvfkV9VXfRIcscwEeUc/m/J2Jazrt1i0myGSEk5yduZiJ95bRX2A38AvUPzTGqeXf+ZAa+ltLlIQMA4N9Iak++HeR5wL+nkNscYhqBP29G0Id2TtiWV+11kq+st88O/CmE+MBw1w8DX7kicSAA/IS8vxvw+UQqfb/4dPBQ0ouAL19PB/5MfPzLdRYeBnwMizQAPzPvbwf8eZ/Cku+g8/9cA3zEX88H/nx+55crwj8L+OTH9tkD8P/DwG4H/DmQOeWm2iUBeQnwhwDS44GPxvgXBuA/ROoLDkogxrKfw6jsmq19Tf/t54rwT44YQNw9TwL//ZQq3diFW+x4XMx1ZKOTLKYPYeNB8R9vWICPsOGbzglbVuwDfm9Ch3n/yjPZxuHwAr+Ktp3wULBXunPIn6YD8LOKCJQW2cIEoR3nvKGOyTbWHR8e8Xl9LqdtDnpx7b62tti0gM/Jvo4Sx6/0ct/q42homwPYdGDsxT2lvISat5Vxtdx+qADe7OtuM1+EVD0WlWbnJ9MK+MtTivHgi/WUpYD+qIH13dt1rXehas9AVVo1fiSHQ3nLOKF5+PTRs4qwjy+Q5azyKqygDePR/zQ0g3T4FTvixgcNKj13NSdslUMxq4eS5Z9sfPhqW5erEL3Z++l587CsDU60VH6qz7e7ouPLqJaydQJfaHpDCYA/eYzdVueHtin6sUjlcWCm0uzl02rzPgr46qCDL5pyq1AqW85bksl3wsOP7JJ7jcfbIHr9ztLaF7fY83IgfjxIYBZ6xo70hJCrUkHEMPF1gEvQze7y6SKCX6FDDceBPz+lLX1P0S4onYqtzf9FZk0N6tBhf7O5st48lGatPW1+m5QhlrbZyNANBTmNh6z/NIyh2YxqB/ALPXHb6QGetWJWD6XTP/VOlFUglmKo/r7qqwAAIABJREFUUq/g4IioIqX/vY52nlnpKHZjNGNL3weBT1Znq93vFUz/0gaWlqJQZzYMAfDzSBeqFuv2vK1aazXzzFmyPujirMzmWPTbtfWuzXO2LH3/9GfbhVXyyXp/IXZt0A3gB7s7oticTiYEEgLffIpRmFC7gLpO3a4+2WWVSOXIBXxilUe0QN4557vN+6FtalNBG8ZjstfiJiY7gD+PYznrd0jhRgJ/1TkSD3yb94bBURxThdielNJZ3UxvRrW+c33aKZmO1q6s1LxCWF/a6ExHxGrYk8ptPgr4h/YcM1cp5cY5Z4k1KdxF9xoUYb115QK+OX3qVSU4J/FdtUH9wK/KUHeHptTrebx9MPco8NeTR98Sp10wBqnNDXPS2IHr4LFGgBn49gHU1g8sfb477v9pW0BBHuNRa/Y6uBlKcJsLHjc33k+UiQO+1bk2Fviudi8GV9VRVYh9WYEt4G/r+yDwp5dG5e+8w70y12ZU7lUkAP+gHBleEi6NPc2RygRg4QX+yvI81otdL858Pe1erwAInEVfvcD3dFd3hn2fCpMZgL9ZuVq/wFF3xqx0027fbAK+wOvlBeEo4BOfIlz/30YZj8Fe5vokxx7grznTFjuAbxsnigO+07a519eNc8W9vNeawZw3Pg18aXpAduelx8fbnJAA/Kw5W3Ge9wZ4RtsaZhSudSW+IojvtV6d+KNlDcZS46UN8x35Ut9Zt2sNdH0yMQB8b3drF/DLhiHBGhxRM/AE8HHDBFqewpzAd9Qxo/oaMIO8bAgjc05mzTlWGzpU2pBwxVpa+4BfvULA1xVURhmPE/hYr9hLdgB/RVda7AW+bKuCkdJdXtMH/G5r7lQ4yiHyxmb7ALlijCmJrZJAur7bWd/NWeBTswdW5+UruBRNefemZXRsOAA/T1v3V7Nli2W173Wiapd0TLP+UR86kaLfS7GUmhynymfzWEub2g4Da2jjfUofsSWJpdVpGn7Um1PZz/JKTivXmEf8zJD5w40LemfDx+OX2KqP8XuAX5ndFVp3pd3eSfOiDs+m48Cf4l/TuijdqcHO8p1L3RXlRi69KBQ2R3iCY6+afvRIPa1yjdE50cecuQ92Xvj5FbRhPA7gjwnAKWxQ7wG+mZ0odgKfCxNpODppa2efJ7tZjItU/Z7PZW8Ej/PClnTnOCJ0tSTMsZRpxERe4CvdF+o3u3VW2qMyI6Cf7UUA/JsAf34NXqLuiFrv5WytVNRMJLEqU1HLOaN2apTVlt3P/JuqhTE83Fan2GznxArg6zGZN1PcwI/rLrfcyyocYTgMfLJ+QcNurKzpZlZPZtY7U2UuUpYO+xZXWkM0FeK9wNdCuN36pLf94Nl4LODP0J19413A17I51pnbEPClFcauTgOf2zlNhSMOs05ODPZvFnLoGwfjjueBX9k7seY1fvIt2NquGQfg3wX41PXqPE220pqzy8+IKpzAt68WrkzVnMUl68lRa79BwxN0lgvPm61Z/hNRN/C3u4vMphD7FTsD8JUdHhVurKz2YE43EHoDK6tFeK3DpYUt1e+jx+DafcCvNxS0ZTxr4Otj0RwB/mxFGgjjgN/Z/jU5C3ziKnMiIs5GKtfeFrMZ0o6NK0uP6YHPXS0j5prJ7F63AoB/C+BPuFyFSqvVf7M/9s50S1IQhsIiiOfocX//d52uaheWBHCpxZ57/81UdYkEPgKEULK3BBFNyPnrmp6c186gorl+4PgsHXlDKRdBYwM/8XW1X2AZ3Xs6CHzrKYPzFPuf0nZFW9MmFbGtPL/tYNtQcyWv+TJHgB80UKjx2MDPqbuWin3AX6ZwQ7YT+JY3Yv/FYeDTMXP+yp2njsqHZRVDUL/RxLY9TgO/oKMspdV3q3tnYPvTm7YjszY92JAO3GxJNaHR7OEip2+gW7qm4/D63aAPIiiSoMYG/sigZ7AHH+2TsXgV8DVhv4HBSmOxyfLxJGWg2ixRwcZLDM5a2l7ghw0UajwWJ9siCzE1Dfjz4K2yvcAngDudBP7AjLBtLF8Nfc+YVYyBiiLoYwPJjigdGvgTs5VubwM1t07Q/qfDMjtuLLaWC5b2PGVpwF92E82mqbje2pNPjGFT2c/vsiTgs8+wPyBQnL0F+G5tOg+1HjEPpJ3ZTTtqONdWdVM1tZ7fLw4BP0sC/pRFgE+3rL3Afw59U3YO+DocqJII/Jp7gzqSwFySCW+tYihqSBhi28EpwNeh6Q3XhubG2NgLp95xHAD/anU7D16xk8vBGsoLPkaOfGBv+B89u7LYWK1Hp12eKewVgzaSDNoGfux1x2QUp8HnYuBb3Wq0bPL7Y1NhaTSrtOADjbbAVl2dBr5glnTGncBvDwL/p8HZMY8HgD9dAvyOG2GrSMyXIv0Sqxhz46HsXZ4DfhnYwOA50FtF7pLPSgP451TvS45c8K5GSRi6SAW++X3NOpb2tpxm/UADJmsQmEpcarGA38bGrf7TwG+CwLcOXzXWugAX7+2FuZNupXFU2VnX2Ql830BBE7HA35Id7Qd+jHIJwFeXAJ9vMl242Jpc8iGAH7L3QeAPZSBEScUW5wZzXY2bNQL410nuW8Qv+PNEmlgOEKnAFx6YAo5lleg7CjP7mrJX5bMk4AfQo/0z+pcDv7RrkXqKDgO/2qbUzkpZmQp8uv8ZxM+Hw8AfpsCJ0CoZ+JWZbOy+wG/5EbYOz2Y1+VZWMUL2FmeAT8dSWMDPsygH2h1ZBwH8E6rKXWs6AVxSwM9SgW/+L18gG0ER4Fv5+bxjlLuAn70S+F0U+Nlx4BuTBGc74iTwrbxrtTgCfMZAwVonPrJTS94Z+IEKj7Tak8AvTgC/cg9dEsDXCRwQ+p6Z0+4G/DVONm1UVXcB/pprM6+bLwV+G5tQVxcAv1h2IdwwzJl8ilLS4peZAdFYA08F/pbK1zHQPuCLNbVkMwL4UeDT9q5OAL92D0ofBL5xwqy85joVAD+4ptMnfXvgZ9ungG8u6fBtbEgF/ppdu5PC+V7ssAkF/PYlwM9i+XYGMi/ZPuCvafF7MmJfxeHIA9RIgtiJfcAPGGgX8Jdh43n7yR8Gfn8a+M2BrLgJwC+YA/Ch2CCuAZouhATwX6WmjMR8JbZJK5ZuL/D9TVvNNz8RA/56UqX1v7dr0zawb5mfB34XCRjqHaf8EPCXw1e588dd9Fh9/CTBlmSCyYfPWWkx0FRQX0kHvlySIgn65e8F/ECT0eFi01ylonQuBr5owrmhFetekdFy27QP+fBf7uInVTEfH9ZSUTrJwDd38ye2kXRElI5ied+RM4E2KcJNWxOPOva6x4BfhxfxvVO+h4Bvh+O4GWzyU8A3nbJhD/A7Kx7jMPALewvh9sDPubgzUYYj0iTZZaxi1LuzJKYAX5dMrgr7uBfhMTELcOu6jgbwX6UuifhDa8wHiBX/msrblQx8M2Rw5CZ1VRntVoZn3IkQE5sk4EdfdzgD/CE8t+rdGIpjwFd0tvgxOq9LAf62rqN3AF8FDZQM/Nm9HAMv/0ng693An7gFUxWZC9Lhw9TlY/JK4G+3FLXMUyu2vhvGrVtdiBbAf1V512kU31dabd+qoZgml2eHgG8lfam4ZDdO8jAO+MLpW3RqhTEJ+H34de3Vpb3Az/LQSCu9jDLHgC/ISJjlDbqzwF8D6kQy8EUeNFAy8KXzBrcHvmQc+WWu10bWZXUA+FU4hdQR4K9Z3azPbWt2jFFGvvlN5aHtBgB/r1X5k83PVPOFRbqWWTU/BHwngZWm27173zoH/MFxZjWZPI2bz9hdt6UD19zXPQh8FZhbDf7tJseAb15AIXwXy1/bKmQM+CM1EylCwK99A+XZWeC7f/c1wCe+UdHALyhXxXPD4xdP99R8jUSvvzzZDseAv0XVTPxTRzoI0M4+WFSBiTyAf72MC5uIKZ/Ufod2GCXcDK77gK/tBYeipNqmLMk9TBVBtvc9EfSr3b/W1ORHdOXupAehVXozWfj8iSq51dHdwK/KkqpQMhXvc5oeDcu073BXCcBvdhgoGfjNtwLfXy4THQ38kVwodIhfxyNXqnh6ZEn2qkz0oTbKAl+MDXMZl/3UpYl3FcX7JZVOrvyeA+C/TuaNgk1vNppK1o6n2fpX62zeaJ8dAL7QbKZ745qqybvyKgz8kuXJ6ldbOfnriaQR9bprLEEwfiZlYjrQI63Rm8ycoQeBv43nFbWKal62kVWPaxPjwP+9isr++ZaubTchmKy90I2jwHenKF8DfO8pnofgbSWJ5+mH1QMwDpsSV/8QqolTz069dkT6o+dtZXuBXxXKTNTQBXNrjESSnHVusF0ibLT/IZoMGsC/kviPJlE/z2P0OieO462+Z/68sixrt5OOm+mjwM/7udkJ6e/Lbxe96cdFb5kYaiLOJAL80fYmnv3JWkBa36B6XvCpafcz8LqNOAt8K0PBpOZrH83e5Hfg/cBnEttvo83zOr2fqX3fpeVD+mXSYI/EjFVGc4pU/YxkOmQgsQf4TuZWI+6j+izwl82ZJXxoPQVoVGZjjraPQ8fKskleD8/WJjU19Acmi3osmDXP7SKxaba36mJtdH7Xx9XPs7wcTF0oNsh0N5rx91ri7dbGyXxKM5//WngwAvivJP5UxlQQa8K28jZLBv7DwtNjTNn+WviI8lVnUeAXprOzro1MD8fC8drtUY4GftLrHgY+/+vELP4o8LOGjsjpmYemAf9xebhSk2sY1yrrglIz31iuV+vKXwNtYT4yL/YAfzJXC9bojiGrav1h4NcrtkfjenirMtfK77RZZT3bFCLnZNguo4i9Ou4bge09Tj29Pqw4Z5IaKtYrTWu1VVYF4L9UKhn4QkcBmAR8/q/ty6UZ3vNhmYsT0v3waHNIHrgJ/ToHfI7JeZtdAPxAD3fTkh0HvmQiUfU54Ftit9K1X88Na6BdwF/NOKl+o0qjA0B/E/BFHs1aUzG1XqcM/ZRkHOf15cBPuBCBJb53iXB4IAHwL1arg5aVMQRa2zK7ge9uobZklxmzFOCP0TywQ74D+DSTuza7BPhkWfzF1lPA/x0Cx8R5XT4cAL5krVLlXj3LsFeRfPCK9R0/DXzP3879Gy8Vg90xpXuQ75ZHcV7vnTuEgZ/zh4JVFiO+sU2hQqMBgP8yDWwHmpw2MTQRN2Ev8P2MqASMdJslAd9u19P2ry0SsNI7gE++rsguAr6R/4sfYk8CX3Hp8YiuVjuRVlRYZsP7n75VnLFbewbqHa4lA98aS3Ijtc/0aeA7w3jTEpbpmQ7U+t2wTsKfqKP++xh3K5KB/0iDlAT8RxiON1aYrbv1+rq+U4bk2wL/Eavioy2fCMMKZX1x3YJN37S1zEtGVhR2M9AyoWV5fennp7fQB7OQg6bHNDK/n7ARl9cJvveO4yNuhl9iiD0HfMFGPVQ2JMw3Cx28kpobiamDVuYzftPnKMtAnW2g9Fw629Gf/IeJMuR4vhn4pkvxLA9RmaYfkZsehOzoITiqqo95Yp6922MLvXrkCkV2y2f0lzEAKhH6PB9vRc0bA//BfNnrJS5eT0qyDaJVv5twjVY+nCozzy4FfFXJ+vmYbmKbTibm75S6lv6X5PMRBdPy9bNk7S9wfgraeE27Gpdfn4xfKZ6/KqnX7djXlcQfqUDxiFcd1FztuVWc2FOcSuDS3db8Jtijkpvn5qHz3CqYO3epvXyu5KBVqt61dchAgcbjfSSn5tk8xOoi6DHgHc5/H14QLxzTOQ8tiOJRraZ9vnQzSd4ysu6eVdi7Taodp66cP9rn7IpitHMfF569+2dLbth25lfFpvEZSRYagbhuOfS/vOgmRTJl+fzHmDdD5r2B/3Ld7eA0BEEQgA/gQxAE4AP4AD4EQQA+BOBDEATgA/gQBEEAPoAPQRAE4AP4EARBAD6AD0EQBOAD+BAEQQA+gA9BEATgA/gQBEEAPoAPQRCADwH4EAQB+AA+BEEQgA/gQxAEAfj3r55oRm0IgiAAH4IgCALwIQiCIAAfgiAIAvAhCIIgAB+CIAgC8CEIgiAAH4IgCMCHIAiCAHwIgiAIwIcgCIIAfAiCIAjAhyAIggB8CIIgCMCHIAiCAPy/pqqY1aIuIAj6D4G/QpCUCL7w9+FT6lmS+lSXs4o31Kf4UBWIpQDz1QNtsEouN2Z7+v1Pl8StgT/ps3zPu4n/1Y26J/BVGVKQjMuX9Be+DWWKavlwfEcJik81Q6cKilCVXG/M84Pq6ZIkvvEttTav4Xu4txSpB/BvD/y3MOJduO3nz6a3lKD6dP/7MPAP/8Lpkqj/AfjF1xTpL4+vAD7VM+ub9Ifm96NGvKUE39L/xn3AP+umfRPwx78HmQuBX72owQH4fx346h79YXiLb/Rx4A8O7hLxd5UxTwNflGcnYl/oBX/bBLIYp/yqifkKfAng30D1fwP86S2lnZ9S5t9SBYn4uxr43eccxv8C+Cc8+6m7dCW2+MPV/QeBr0O8b+4G/MXvEf6yTfWeDQf96Y0NF3eVYKvkH3tntt04CIPhYBafgw82Nu//rpOkSQzil8BNp51M47vO2CyS+CTEEqTM7af7/wb+Xwa+/eI11jfwXxP402Vn1aMvt6eLEa+haPU9uyX/OeAfTKTYn+7/FwL/P9wn+AXA118cp72B/5rAP9z4+bcq+kWA739k1H4d8PXTEvgPzcs8mzHbi/hy4KtfNtR/G/DtG/iCPNNPI2H8GWW6Z3HyfEt+A/Dd80V8OfB/21D/FcCfV2Occ5MxentuZNrNxHNJ0Zh1rtMv52ou9SRjuCSM1dfvJ/Q9ePx6eV0oL+vjZqZLw3RvjKysuXzhjNnswonTXkudzq8cL7RqiD/3/tZ9Wt4B3CFlElnO52abdG2Gnp/qf6+CO4F/lcB0NaBeCagPFVxMrpao2iXaMBF1syROkWI1x+3go8DbUHmItwL+rHvtuwH8c2Xpav3iqLpI6zZ6J9bgmmPO6wcDXjBqfHHgd6zW6TQIW3kMnNrhlKxOZRHOZsPJkVqWrbIXS79fSW9Ka/UxFOWRcZgfKPBTVnsw7WmqjwsSSmkLayG51MxWqK0sdEhqH9mRLrQX5VHcRQagsjKvIz+Rng0TgMBcyHZsxg++oeA28Gc9VRJYgUmXWw40kajzO3Zi1SJWokUxU9VGRatJnrf71JG18hs0rxL4Njfac+NZq71csXFXV7hduVG0PhXqxipQdPRC4M9kzKnaxkvDGfQb+N8J/KaL1UHeu4k9vQVnweeF5cMMayC2MDvue7gLHLw+KQR8Ux9LGBpi8dwup9wWbCW5IBe7DewlF/jcxLKTOJJ9oVjBLWWeTpAzYyTjdu7pP7SHUsy7daytJVcsgZ3fcBlhDaxENd6gtlefdtnMtJhYtm0dpNtJDtvBOfxgxDuJOhiYixdmUePKDB3tA2+BZQVbt4kET5UoX+7g1msCf+gEvnetzfpOBv5evhb4sDJ15MTXAxvxoDbEBmEy4CtAubUrXSwBz7Q6RIdUEm41wsHVOMwc7hyYePmlffKC+f9F9fWfE9vWUnAzJeWOSuCET5voRh/WqkJkuUWoPYnXUcWDdoAtvTIv3XIIDW/Lu6M6NEKcBpJQeMzliJmH8Q38n3j67klD+uGAPzSAv0kGyhLEywbOAl8tTRfy2JJoEEsGf4zMFfCmtgsrS12ka+xc68gEC/xDytyFIgxL5Y5fu9dUcBP4Sws4NfAnqSOcEgdFDXttyANWs33WDsRDkablQWMv8IM40aEeXvNNckfGHNLiG/j/DvAlRAzCTDqzMS+ajCtt/LJoZK3JUpOTnBMgwF+atpdZ36PEMPYHSxJ8C3Fmwc65V1mymEtZJLG1wy3/elnnWk2qPUwb+JIyFyKU5bLkZrVZKnWLsuXNKd0y6JWCYy/wR04CM2eIUWSmy1pUlLfRNQEsN9VXzcTYAR9QSIfgDSDwEk22LrN2At+1SJ4TX+D9Lm7BLlapIPcG/r8CfDXkSzn6eoLJBIYsDk/h79mEYtQszn2YflaI22YQQwfQlI/vQwaqqg05PcO9MpIDsOLtEvwlCfkAd+YqlC1Rce5R4S2HuTXsW5dLi+cnH+HqqgAP4G0awH90w/co89LMEFcFAkmLgJS4/oP4POUKXqg4WsCfD0ug1K+7W4HZR0DKlvH3dFfq8OuZK5arWUkuW7XsoAjdl7NzOz868mteky+zQOEQ8C1pe4CThXwNIMSr6ayPlL5DcVC42y/xbikrZzvbzWVy/Qb+twI/GvJsKJQNupqcy8A33NLuvrVGrTHcP6Kr+Tvf65TAfTeCsucAFLchm4TfBsS6VBFFOQzCeWzpYtfD3Fx+nDyXwVKhSjHL21Byh3bfFOPP7blfdpxI5LaODTU4fjwKyjzFODPxZu3Kxuj7OndRMNlCotjNXkwB67QyHvIOpkD+zgLO+7d+nUK6L3mSFnlOojcXeeaTWQAPA1DcuZpYqnW3Ay2Lymfe1FfDda3STZUDBLmiy2nzR7Vb9rMlKlCjyJeLHw3c31psBYdYO6qbXWQ7BBItaWfm+k7pfCvwhRnWjrakTk3gRwn4HiQ3rxbXTJtUPCy+92VvHH17H2eZy7E18O8DJ192YtgV0GIUBR7a3z5JuaIN7RM5CZfZUnUtpHTeB+brcak5rdacK8tl+4ljl47ZRhp6C1BUAoQlK7PlqluiDuxSsgOfE0HVmKN2kNWqQduo6ep6xC2NOMXClZUJTJ2S8FZ11G4fc7sBq4lGT+NRLb+B/zWP6gH+AtPZTh5n2Pxi3/YEgFXKQy2N1UgGYc6kfTo5VcDP8pWmAXxcNgVeAF5wlnJFoVozbFhdA3eVmkKXMoUElu3qf7cBDszaf/cEf6U9Jn8n2FD+kSJ8DXBI9wvAagLarStBz+JkPFEC8tNK9rkWuJ5dCRNsgidvxRMPfAMXJxyp4OlLVd/A/2SjO4C/L2qqzwPfEdzEvvZNZMbvaNSBgW+Ip9rwZJnKoLDRxobVBQ5IAry53mSUtdLDDHXvuQiSA5/6gN9QJrtCXTUswIYeBv5EY72jwFdBBr46GGLsW49q4EcUFDtSzSo5JWgHSpKLOfHA97DORbQgpCGNA+6pHD4arzoQ4Acobk9WxKbW1oU38L8d+LHS+yopmrlgtwS+Pxa/ro4snapRgGU11j2z7krS0RZniSYRvfMob0oqw+IFhntWyOh0/YyYyrKjTHz78FtR7FXjChxvaIZrxp73IPAzBbtPAV9lW9WxBNbxUDCZSZRGMiUOyURAi2uw2A4EA1MYwSQfo6G0HRyIkoYS9olExwsee6W4ZyZZk0rCW5y4fAP/B4FvaKgbTl3AxyQhw6Id4M/lyinZTJBOHcDnatPlawZ7IfmeYeZ/yXBaHrss8kcAfuo67/VRVXlsgAM++btTmTl71vLyCAszPNRhtU1v3tIAJpQHgN8lAdMf4FvcImaKUL4WxWqwHQgGpnFxJB+THhsNkHlhHKFF8YGZaxTG4plYpGzphuO+/d81TbTZN/D/LeDPjAqPAT+W1rYeYcE+rFqjt2x7ZGqzDBImKZo64d6HkwQ8eUOfFRJFjci4vsCnD/i9yryHsXqqDifMRUMDxknjB7/m+ozbMeArXgJEb06eEzLOA0mQ4LBsuBMz54ftYMLFkXgiiMV2A99zs5NiQV0zo6nsRWJyNfROLRVe9sDV/wH85bZBax9S1UmpWVyH8j25gtSxiaO8CYoBvpWBv8qDsMuLyMBnwp0SePPhgd5xCIW5u2ojrV4h8LlbMQcw+Jh7u8pi40lassHeCio4ncSCOyRgod6WDheEW0SBv2BVJWnm1AyrGo7fifmY8QngDzyMa7dThE8nCfjcbxrPVRyZ7XNSb+B/12MaOZITvzGaC6yw5RrRHGAOFfCg8f3cZ3wc8GccrKMso2emGoY/zsLfJnAE+H4aRGpUboqZzcjKPKHrr/IvZybci632KxNkPDXjvoMSGNstGvpaNEkiE6v5vB0YJtNDVrQOHHYGLtky077SWpipFwn0Auf4qh5lFzq9ZiL/tYHPt53Zoq240FLScwv49Gqmwbgj3zOz+dAJ/D5HJ4b/CQN/s+g5dQ/03QsROAV7DPiuocw7v6trgqaSNVz/WwkZekPXsLmDwKeX8Tj7HPDpBZfh8Q+bHP9+BviH7WCTbPJR7ASLxXEzcMnsvDki4CdxJHBymGspZjb2clcj/8/Ad43ZpZWA7w8Bv7xhY0hanf4G8GfcqOELgL9g4HcvTDUSGuX1KiFa/iiOhVORTmWS6zQvvyBgCmHaRp7PdSl40vxSkOmTwLz3cP4M8MsLcMLlKC4n0fV54PfagW/EE6OcipEeYAHsmd9iuDFrwVufuGFbzXj0WM4b+D8G/I07iFPGT51JlvLlC2OiBWsAjRU421fb2hX1fgb4avwi4Lsm7W73v3gikUa82+rrx1v59VfD9HGjjunpmZLbr4vrYebCRegu4AMJWO5uhlnKwIP5wrLNICnNKvFvAp/7Yd+AUzpPAp9N6YQ8FGJiEbKjnguy8LYjK1/29gb+TwJ/YIINK/Ex9q3hf9jvUF1GsofMmzz5hAMrMe4hHoOgWNOKXYkTx20b+EF2iOFx5RCLO3tk0kN+JWXHqlsbqxMWD2vIvf3atmG/fYdrr5E9RtBNCZQGNIqLPuNgmi0SgR+6rOWwHRgc+LvO9Y6DwI8noTpmmATmZORJ9At1In9Qb+B/w5PaNmMgNv3IAV9Bc7DlS5tU0eJry7fltCLKESSpjYuTlAT82EWKiM2ajMipVx+LNIVZwC04LO4UxFXsUaZHqVUG+BGbUxTTJ7yC2QQK0VyPBKAvY8w/vySKfLA1dkiS2eQs8Xs6CvyERwg5t748B3xuFrQVcGj83sVImkj0NzCbpfZrdqY38L/hce3YY4M+wbDAX9G3t7fEY48LOvTPHIoNsm/qOw2axDhJXn+UT1/ei16Ohi+T4IC9eOEJMy+xPR6X3Ce3IVVGLLSAA2Yj4Xp77zkEAAAWvElEQVThFSxnP6CbbUjASEBBE5KWRE+yJ41Sz7vtICAvo+j9PanvjEGzy0ymNBRODB+4dwT4Kxa35rXQs2/2DfwvB75t5xNza51HFviZJWV7bcnlHyiAg76H1DJKU4QqnxFg2LWQij4F/AW11lHgxaOTbi3McOFNlC08ac5jCsqckFfuuTLFycCHuj8CfI0ksJHWkt9WtiMfe8Ol588Bf7/v3ktzm147gI4/0lNqur2pugv4GyxnK506TNet9HzGfmo3l8N+zGrllTq/gf/3n9CxnDTU5pCv6lHg7wjIf1rJEk6COwVhU8g/JnGRx3BtymPKx1gaTn/YO9Pl1lEgCptVVVDa3/9dx9oRdCPk3Ezi+Jw/cyeWWBr4QNDAF4DfERnxiQ/33bPQgh6xFSyeqFZZ07hLTEKcixgWZkOwnQR+Wf6vCzg+Xi57Sjy5rYs7pjshUOuKLBr/sSsCvsgUXL7XyXf8QYeqkm3Jdw+G4z7NHBXO0XpV9FBHjeiSCy/INldnVqYMgP/9YoEkzL71NljC21xB6nTbSODvsKz0NT7dnxlW2uAW+95zI/zYP60n3286um0e38Dt1tAC598hiuIW8IPlvj6ejQzCajlPY6MuPrnC60mE6rkR/hXuYuAfidymrU+FeXpmzAA/yL/J5P9yhH+16EyyQZYAXybdUFAGoh8ezGGmcYoYpwXFGjaMRsUfRDI+5oP2TiHufdDEORSeM3ijLlv8QM7p7eEc+xPquC7vKyinPQzpkMWlbW5J1ukWHAvg/wTwK/Y4g/DSEul7Y6KN7enH3fSqJTfkn47/WO7XU9P9njasUOHQwGTer6bLh6ZrSOVWJxMXgaCRTN6FwnRHFW3jKDT9YWOvyFy1z3T0naR2aZqKcHiZjwrSFxNos5f5dLHdMJ0ao7me6S7wk8K0aTGRe4zjYX/wnuXzT35O2leB39yxgE0ItN3LN3R2HaZSUxmKAT7nxCWoaPotmuQWlsJ6EPSe9XR9ZFcTLTOM9HBbmg9AGq9bvJ9Kre2i/qWenFObsFqYdLAmpwxGJ2+kE09pmzt8GbZ7LhtbvbAQAeC/qPzm7C4tQvZslat93g+yXzjNLxxOHOt8c+dS4BfdYV6lU+2J0ittGbc7xnuAPicnOZPm1Dlar71t837H9B3m/amzW5wa51HqFe6SS2b9dTEFXjozRNyg0tN2TFn+SYjZ9YzcrnjGPO7uFydKoYYj1PjKL0v0+nGXdHjprBbt0hSUeu3SrWS4qgfMuFbInHnpvLWj7raRlr6coD2NuftrCjCX+8YX2OTuMN8WptaA2tOw8O0uv3pH4OcP+dC5Ikw2WpEkSSdAPdss3OkLoZ6rQDrLOmRSmvpcs7Xv+m7Ru3v8l91E8UtsArjJXPoFFw2x6vmK7C49+IK7Wn7PXUlhhl8vc6NsCHNQ+bc6Z7Tw62Iu4DY9T9lnga9jCwz8RTw2DyoT1f8lRT69IrAq3abRstHk6gE3rqUQXA9JWrj+m93HNNL1UHEQCMY7TpZwgOmrwjZnb6UYwP+/gf9wNdHvJz07cSqWJ5bFPNssunRsocvej/xtqit+hkuN+kXgEwlpRQo8rqXzX10t+3SdNtYr3KUzpI0k+lvOs+UYfKXmoPI/Fu+TXft5bjxN2yepY64E+KRFBYkelR42wwDflw0uXq8Hiqi0OqWwv9ePJMHy0aXft0TVUSY1z2Wb81cRAfg/C/zg3rejqSY1tqnTXoHygxi41hePkQz9ha8kN44iWxE5EnWPK+AXHFQSZ8SKx5j1pgvZmJlnG7kpq6jBycc17ohV+aQ9qqQwVdIYG8JKOs1//uasOObmLvBjC9TENw0F6LQIJJ0ikViUOy2CSKhIQRbMU4guMxlJojmq523z0Jk1jMJ+JGpkRz1sCEzHS8zJ4Yb9gwA+ndVR5JL8frx/S+DrLPBDAp6OLZ7mYAVR4aOTqAzj+OY8Vz27+K/dnfcdXd2T83RHQ37j3gZ+uOI0Hfz4YDwaG2JEk/Wc7lumOTgbh1Fd4IkszCEuTJcstdRRj0CudBTmn6shkuDm1Q0wpyhnu3CesCeUJoc9WxLS7YO/BPga+Jloll/He6A71XM5eaWRM2bUedG58YTl4ldRtat14mF6PkvauwcJfCJN3uSwY9/x2qu3HOHrnM6fhdvlR+uxZm576lTOg10L2nYN+9T03FgHK1gNEcAzhClS+n2hxr1y2lFvHiiafnq6IWqr5a1XUS1WdHb3wLJ10a0XL80newaBmTi9nT3c3Gw3XFXwRu/PPx9XR9KaPSdydvfYUqmiVG9ueZeFyRXTcddVPV1Q4ehwmrL8P8gC1kQBs0WYRBlbwDAW2Mtzj1haPzThD/vfhyBFKh8eUzObMJpuaL5WD9x2erRdDk8yTPXqg2Cn3OWDVVvjq60+J7DZ26WMfwqanlyrjgvtE/uBilybE70ej8vi9Xvea/uWbpk31ZgC3ylnCgvQMA867izvJDXmXuK/p2KJ4nBNYcb2gBlz38z464VpSrImbtvV3bPDP7RApsr90xqRN8m9elCctMYYd6MIMqkXlzGJf9LmvqtJAvgQBEEQgA9BEAQB+BAEQRCAD0EQBOBDEARBAD4EQRAE4EMQBEEAPgRBEATgQxAEQQA+BEEQBOBDEARBAD4EQRAE4EMQBEEAPgRBEIAPQRAEAfgQBEEQgA9BEAQB+BAEQRCAD0EQBAH4EARBEIAPQRAEAfgQBEEQgA9BEATgQxAEQQA+BEEQBOBDEARBAD4EQdBfkADwIQiCPkCNlwbAh6DPGuSZSaLgATf9tykKNHxUlL9GQGl62b2UpexrpyduRLIGTajIFj9VvESqhrqqKgAfgj5snFdNUvwD3fS7fP5DT/+wRYGGj5ry11LZ6eW7jXiOsarGq0xvAd+IZA2aUJEtfgCBZOLUuCQawIegD9OMu5ofIsoNh+8G/IoftPtPBn7j5ZZoAB+CPkwq3/TVzs63A37HdmLVJwPfbkluFRZtIejTVGfnP9r917cDvhS55H048OvO/b2qDOBDUBGdufmP5suf/j8H/GrIdXEvBMxNiRd3fr9Ck019/yerMoAPQVcSufkPn5/h/93AZ9Ktqs8G/t+bygHwIahYfvPD4ToD9abAZxJuPxv44u/WZAAfgi6V8cwcsnPhvx74ls/u5wL/DwvAh6BCrLbUL3XW2+U3A39ebK4a7oOmBfABfAj6SLGemebCn/0XA1/PfZUnZjSW7xkAH8CHoM8UB8cx9NgkyOUGb+ddPNLaUav9hIaMW6br9Wjn+KztqNXDLczW6j4Gvhk6u2wUe0bX5IGvmM5qTps3jFum3Xned1MypO3MfeA/321nq3jlEltErxOdrVPL+5NZu6GhLNdT02zTe8sChbVeGybGRi8PPQ1s4pQsn3lCzUVQW928Vz0G8CGodBSawtHNf+454Ks28UYfL4Df1NELPkKKseGvUobA76J3ay0ywBeSHsTPfzY54D8x6I7dqM/EN7eALzp5ysNd4MdmXd7tE8vFxZUUBxmjqs8mjFLytKjxYeRv5a0P4ENQgQS9hqlPvo0R8J0lth/ZC+ATG5fCWIWn9jTpcH7njPyGB/6SiGTBWS3JyQFfx8mQ/Q3g95K3SwHwE7Cv7+q85dKulAS+azMmnHv3uFjlOw3yAXwIKhHtbl+fdi+dgd9QXHsF+MGasGire8CncbTC3JHOR+3yxxzw6yRr0hUDX1XVV4CvuXd11nJktGmMVKEdJpzneZIn6jdy4wTwIahEpGemOg+RT8AXGxisnrVMLhcBvx217o15vhMf4TVuDLLjNl0dAV/aTg/GKO3XX1se+GQvZta/5YC/JuKZTD3K88mbl8Dfe7TW6m1C/Qbwh/31brLR8AyjPoA/Wc6Qltt533qtJvtMBZLEKFajSf8MZjfh3psFkPdT3l92XgXwIeh3yxK+JPa8lHsC/oIcGcyi6xLgN6d1QjeevOX7FY7bBIpQ9kScQbl06qTnge+I9VC/frRcAb9dwxX6dPLmJfDryC6muzOHv24RkDrM6BKUylnOSWJeXyQxLosgcv9mU/LUm+290xqTWCKRAD4E/TGp1G3dRSu5qbvJaUKlCPjkVFIlQlj6pM9hGvFCOc8Dn+jF3PbRkge+HKJ8bRNbS76J+09EaMbWMXa5Ar5NX3+UWM6zKxphjC4ptHWKx4TAl0EXOr7ZIcoAPgSVKfXM9BEuQ3L5tH94CfgiIEpDXFuS9cPvmDmdHebpNgK95TIL/PPKQGgZ9rTMFYrtaY7kLvCbG5PmoeVclUZLAL9LP4lM2McuvY1I+vz3gSiAD0Fl0uGIcSaKjPAQkisdi78G/G0NdedR5FWTBT43v3LAPOnF5NYDZIGv037FFgGfAuQN4Hd3BtT18ezATW6dY2yJkgjPUSJit1/faQ3gQ9Dvk4sPFFbxkmdALmoH7mvADwBriRmaLwJfRb2Y2r8hbgBflwO/j3vNe8Bv72zKtcd7mUvLghjJg/D64FONAH73XtuEAXwIKlTs09LGJ8rryEewfrwM/ONq7QCwkhimUsDf7xy/Bv4j2nzV7ki7AfwwmgvgU8co3AB+wdGkkeUMlUsm8YbojU5xEsDXAD4E/UmZ87xAiocY+ONrwDdd4G1vA1ZRp51F/BXDePiJ1+018M89kzkm/b8EfNaGHTEDUg78hj3vjbWc4UhNJH4gXW5sVAAAPgR9hM4TCj6ZYAkaPzXwLgO+qdmdVRRLzxFpWXS3YADzZSFiGzSPx/98D/Cv7JIHfj5w0nLmmI1rroBPwxvAh6CP1Om0MZF1w3kZ+IrfSttcAZ/Zh5sF/noW8vJvFwxx3w74ip9Jyr13CfwOwIegj1To1z6kLf0fAJ+ZAtdHF5MhqK1eAL6LnWD0ewK/r74J+BrA/4+9e11OFAkAMKrcrIJCRd//XXciEBq6QSYVp2r1nF+zMSTYW35pERr4SOFqY238+eEvBH+4DvXafWWl/FoCoF305rha0OGPxeX29YHt12eXRbMj+MEKz/3hneMrg39/WfBXRu5vjuE7pANMgtXGuu3TcK6JMyh3BP8cX9qz3Zvw4fvyvNE9Z+mEZ5Dm4U6/JvjPPszeDn69Hu5yZeSC4He7gn8RfOBhOjPzyVT12emHK8Ev4kn88rTM22qO4oUUdgW//yz6Ok6S69cH//LT4B9OiRGI33zFwd+4EWV0WmbyrYPgw+cpx5d8nTq8Erz4n11gtBL8ZnPthCoxPd6cf+4L/rjm5+JsoZcE/9kFaU+CX63m9b4ycuX06NMLr86pNxD1afPIkODD+7oMXUkdsglf/Kml5ncEP1HTanHO/PrSCnFL9wV/XNX/Hl9m8OvBrxNz9L9eWiG1JM7ayIVLK5RPgt+/R1q8EbgFf7oFHz7KeGZmlgpIsfz0db7K147g3zdn+N1p8+/BT2f4w8VX9XwW/JrgD4unrY7LOT7aHi8fV60Fv1kLfr2+6Fq4w/d45/oV8i8HwYcP1E8C8+THe1HRV6/L2jyG365OXbP43P9l8G8/CH5/ds7itKMXBf/JuByiBUGHOxOGi22mVnxeG7kySHlqu9kO5/FypNdwVAUfPkt/WKVKrukSvviHG14103Sxv1vGdvDz5Rx+uL1IEdYyK9PBjybP5WVf8Kebnwdbvyj48bik7huTL57/d2bLtTuH58s/d8OW8xunJBbSn+1wdMOBYjYsgg+fpZ7u8HfYCv54i9Xs+nXrj2N5u++5p+2Yw75Lx67JZjfRG2+b2AzHPMaf2j/cH23OhljWebXrwqvZkyoOrw7+OC7trX+OdXdtE1ca3x9vY87XbLGc/mG8e3rTjX8yzl3+feDndF2OXDn/tcF2dVdEOzxcvdXmj2865sOly7eD4MNHak6rdzKdv/ir0w9uYj52qa2qKovvUl4u1wYLH57uoltVl91X2s6eVP1Lwa8Sxln7tGttG43LOMlePDplNlg+IquGQarCdymLkSuj/2/9dm36Jubf73XaYAy/Z/yCDx/mu7n1k+Afqx8Ef2U5nPkplGsPdz9ZWiF8Us3hl4K/9RzST7E6HFZ+QJvPMnts0tuujFwZH7eaj8ziLUn804NREXz4NO1p84PD8JaH2V8HP/4zcZkHNrkk5HjIoVv8wqzdGfzh7cj5XwQ/lexw2OZPIiv6EQ8y27XJbdMjF2wXD13qGFQ0hsHnAoIPnyY/rZ3UHb3462JqTHa/7wn+n/+8B7Pb6/nx+8JXaT6fyl6afHqvcSzCoyT58THt3RP8POrW64L/55uaedSrIhzNenr0no+z7tlwd/Ptm42Rm5+m2syaf0kFfzpy3y9MFJ6kKfjwaY7FQ+rV9PX1xbk79eOLRX5eRD741jrarLw9Nir7kndFMY/Msf+Zf75cxseV6q7/heX3zsY7+viNi3AtvxJ+T77y7/Bbi/DfKfNtyrwY9jN1OdRjAG7lcRqs5RMdxvXPN51nI7McuXi72zh28c4v9i4vl5dSF9GepP6fCz7wP5sM8oYEH/6Ry9q1PyD48F6vtfWlHkHw4Y3U7erCXyD48L/WXLvw9Jns5BA+gg/vqeov6rwWRdGMJ/plJvgIPrxn8Jdyw4LgwycEvz0bFQQf3tDiitjTxfQewYf3fXndiuaxUmRTdI7eI/gACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4As+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4AMg+AAIPgCCD4DgAyD4AAg+AIIPgOADIPgAgg+A4AMg+AAIPgCCD4DgAyD4AAg+AIIPIPgACD4Agg+A4AMg+AAIPgCCD4DgAyD4AAg+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwi+4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4AMg+AAIPgCCD4DgAyD4AAg+AIIPgOADIPgAgg+A4AMg+AAIPgCCD4DgAyD4AAg+AIIPIPgACD4Agg+A4AMg+AAIPgCCD4DgAyD4AAg+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4AMg+ACCD4DgAyD4AAg+AIIPgOADIPgACD4Agg+A4AMIPgCCD4DgAyD4AAg+AIIPgOADIPgACD6A4As+gOADIPgACD4Agg+A4AMg+AAIPgCCD4DgAwg+AIIPgOADIPgACD4Agg+A4AMg+AAIPgCCDyD4AAg+AIIPgOADIPgACD4Agg+A4MN/7dQxDQAACAOwj2/Bv1tskKwVUUD4AMIHQPgACB8A4QMgfACED4DwARA+AMIHQPgAwgdA+AAIHwDhAyB8AIQPgPABED4AwgcQPgDCB0D4AAgfAOEDIHwAhA+A8AEQPgDCBxA+AMIHQPgACB8A4QMgfACED4DwARA+gPABED4AwgdA+AAIHwDhAyB8AIQPgPABED6A8AEQPgDCB0D4AAgfAOEDIHwAhA+A8AGEL3wA4QMgfACED4DwARA+AMIHQPgACB8A4QMIHwDhAyB8AIQPgPABED4AwgdA+AAIHwDhAwgfAOEDIHwA3oafAaDAHuKg3JFRmm1yAAAAAElFTkSuQmCC" alt="Logotipo UNIMINUTO">
+      <div class="cover-uni">
+        <strong>UNIMINUTO</strong>
+        Corporación Universitaria Minuto de Dios<br>
+        Educación de calidad al alcance de todos
+      </div>
+    </div>
+
+    <h1>La sociedad en red a través del tiempo</h1>
+    <p class="subtitle">Línea de tiempo interactiva de los <em>precursores de Internet</em> a la actualidad — tecnología, conocimiento y poder, década por década.</p>
+
+    <div class="cover-meta">
+      <div class="item"><div class="label">Estudiante</div><div class="val">Liliana Andrea Peña Leal</div></div>
+      <div class="item"><div class="label">NRC</div><div class="val">93054</div></div>
+      <div class="item"><div class="label">Materia</div><div class="val">Sociedad en Red</div></div>
+      <div class="item"><div class="label">Universidad</div><div class="val">UNIMINUTO</div></div>
+    </div>
+  </div>
+</section>
+
+<nav class="decade-nav" aria-label="Navegación por décadas">
+  <div class="decade-nav-bar">
+    <div class="decade-nav-scroll" id="navScroll">
+      <button class="nav-pill" data-target="s-precursores" style="--dot:var(--hue-precursores)">Precursores</button>
+      <button class="nav-pill" data-target="s-1960" style="--dot:var(--hue-1960)">1960s</button>
+      <button class="nav-pill" data-target="s-1970" style="--dot:var(--hue-1970)">1970s</button>
+      <button class="nav-pill" data-target="s-1980" style="--dot:var(--hue-1980)">1980s</button>
+      <button class="nav-pill" data-target="s-1990" style="--dot:var(--hue-1990)">1990s</button>
+      <button class="nav-pill" data-target="s-2000" style="--dot:var(--hue-2000)">2000s</button>
+      <button class="nav-pill" data-target="s-2010" style="--dot:var(--hue-2010)">2010s</button>
+      <button class="nav-pill" data-target="s-2020" style="--dot:var(--hue-2020-b)">2020-26</button>
+      <button class="nav-pill" data-target="s-cierre" style="--dot:var(--brand-blue)">Síntesis</button>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro" title="Cambiar tema claro/oscuro">🌙</button>
+  </div>
+  <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+</nav>
+
+<section class="intro wrap">
+  <div class="kicker">// introducción</div>
+  <h2>Una red no es solo cable: es poder, saber y comunidad</h2>
+  <p>Cada década de esta línea de tiempo combina cuatro capas: el <strong>avance tecnológico</strong>, lo que cambia en el <strong>conocimiento</strong>, cómo se mueve el <strong>poder</strong> y qué <strong>movimientos sociales</strong> se hacen posibles. Debajo de cada década encontrarás estos mismos botones para resaltar una sola capa a través de toda la historia.</p>
+  <div class="legend-status" id="legendStatus">Mostrando las 4 capas en todas las décadas. Haz clic en una categoría para resaltarla y atenuar las demás.</div>
+</section>
+
+<div class="timeline">
+  <div class="packet"></div>
+
+  <article class="era" id="s-precursores" style="--dot:var(--hue-precursores)">
+    <div class="era-node">📡</div>
+    <div class="era-head"><h3>Precursores</h3><span class="era-range">antes de 1960</span></div>
+    <p class="era-frame">Siglo y medio de inventos en telecomunicación y cálculo, antes de que existiera ninguna red de computadoras.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: el telégrafo envía una señal hasta el receptor">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <line x1="30" y1="70" x2="370" y2="70" stroke="currentColor" stroke-width="2" opacity=".45"/>
+        <rect x="30" y="60" width="46" height="18" rx="4" fill="currentColor"/>
+        <circle cx="20" cy="69" r="7" fill="currentColor"/>
+        <path d="M120,70 L128,52 L136,70 L144,40 L152,70 L160,56 L168,70" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+        <circle class="flow-dot" cx="82" cy="70" r="5.5" fill="currentColor" style="--tx:238px; --ty:0px;"/>
+        <rect x="320" y="38" width="36" height="48" rx="3" fill="none" stroke="currentColor" stroke-width="3"/>
+        <line x1="338" y1="38" x2="338" y2="26" stroke="currentColor" stroke-width="3"/>
+        <circle class="impact-glow" cx="338" cy="20" r="4" fill="currentColor" style="--delay:1.2s; --glow-base:.35;"/>
+        <text x="245" y="34" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="3" fill="currentColor" text-anchor="middle">· − · ·  − −</text>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para enviar la señal</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">1837–44</span><span class="ev">Telégrafo eléctrico (Morse): primer mensaje a distancia casi instantáneo.</span></div>
+      <div class="ledger-row"><span class="yr">1876</span><span class="ev">Teléfono (Alexander Graham Bell): la voz humana viaja por cable.</span></div>
+      <div class="ledger-row"><span class="yr">1945</span><span class="ev">ENIAC y el "Memex" de Vannevar Bush: primera computadora electrónica y el sueño del hipertexto.</span></div>
+      <div class="ledger-row"><span class="yr">1948</span><span class="ev">Shannon (teoría de la información) y Wiener (cibernética) crean el lenguaje matemático de las redes.</span></div>
+      <div class="ledger-row"><span class="yr">1957–58</span><span class="ev">Sputnik y creación de ARPA: la Guerra Fría financia lo que después será Internet.</span></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-1960" style="--dot:var(--hue-1960)">
+    <div class="era-node">🖥️</div>
+    <div class="era-head"><h3>Década de 1960</h3><span class="era-range">1960–1969</span></div>
+    <p class="era-frame">La Guerra Fría empuja a EE. UU. a diseñar una red sin centro único: nace ARPANET.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: ARPANET envía el primer paquete a Stanford">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <rect x="36" y="24" width="98" height="64" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+        <g fill="currentColor">
+          <circle cx="56" cy="42" r="4"/><circle cx="72" cy="42" r="4" opacity=".3"/><circle cx="88" cy="42" r="4"/>
+          <circle cx="56" cy="58" r="4" opacity=".3"/><circle cx="72" cy="58" r="4"/><circle cx="88" cy="58" r="4" opacity=".3"/>
+          <circle cx="56" cy="74" r="4"/><circle cx="72" cy="74" r="4" opacity=".3"/><circle cx="88" cy="74" r="4"/>
+        </g>
+        <line x1="134" y1="56" x2="284" y2="56" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6"/>
+        <rect class="flow-dot" x="140" y="49" width="14" height="14" rx="3" fill="currentColor" style="--tx:132px; --ty:0px; --rot:45deg;"/>
+        <rect class="impact-glow" x="284" y="34" width="80" height="46" rx="6" fill="currentColor" opacity=".14" style="--delay:1.15s; --glow-base:.14;"/>
+        <rect x="284" y="34" width="80" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+        <text x="324" y="63" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor" text-anchor="middle">SRI</text>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para enviar el paquete</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">1962</span><span class="ev">J. C. R. Licklider imagina la "Red Galáctica" de computadoras interconectadas.</span></div>
+      <div class="ledger-row"><span class="yr">1964–65</span><span class="ev">Baran y Davies inventan, cada uno por su lado, la conmutación de paquetes.</span></div>
+      <div class="ledger-row"><span class="yr">29 oct 1969</span><span class="ev">UCLA envía a Stanford el primer mensaje de ARPANET (el sistema colapsó al escribir "LOGIN").</span></div>
+      <div class="ledger-row"><span class="yr">dic 1969</span><span class="ev">ARPANET ya conecta 4 universidades.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>Primera red de área amplia (ARPANET) y los routers primitivos, llamados IMP.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>La ciencia empieza a viajar en tiempo real entre universidades, no solo por correo postal.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>Control 100% militar-académico: ARPA y el Departamento de Defensa de EE. UU.</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Contracultura y desconfianza hacia lo centralizado conviven con el origen militar de la red.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-1970" style="--dot:var(--hue-1970)">
+    <div class="era-node">✉️</div>
+    <div class="era-head"><h3>Década de 1970</h3><span class="era-range">1970–1979</span></div>
+    <p class="era-frame">ARPANET deja de ser un experimento: nace el correo electrónico y se diseña el idioma que unirá redes distintas.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: se envía un correo electrónico">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <rect x="40" y="20" width="150" height="70" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect x="52" y="34" width="126" height="42" fill="currentColor" opacity=".12"/>
+        <text x="115" y="64" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="30" fill="currentColor" text-anchor="middle">@</text>
+        <line x1="40" y1="90" x2="190" y2="90" stroke="currentColor" stroke-width="3"/>
+        <line x1="196" y1="55" x2="246" y2="57" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5" opacity=".5"/>
+        <rect class="flow-dot" x="198" y="49" width="24" height="15" rx="2.5" fill="currentColor" style="--tx:44px; --ty:2px;"/>
+        <g class="impact-bounce" style="--delay:1.05s;">
+          <path d="M250,34 L340,34 L340,80 L250,80 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+          <path d="M250,34 L295,62 L340,34" fill="none" stroke="currentColor" stroke-width="3"/>
+        </g>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para enviar el correo</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">1971</span><span class="ev">Ray Tomlinson crea el correo electrónico en red y el símbolo "@".</span></div>
+      <div class="ledger-row"><span class="yr">1973</span><span class="ev">Ethernet (Xerox PARC) conecta computadoras dentro de una misma oficina.</span></div>
+      <div class="ledger-row"><span class="yr">1974</span><span class="ev">Cerf y Kahn publican el diseño del protocolo TCP.</span></div>
+      <div class="ledger-row"><span class="yr">1979</span><span class="ev">Nace Usenet, sistema de foros de discusión distribuidos.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>TCP/IP en construcción: el protocolo que hará posible una "red de redes".</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>El email desborda su propósito original y se vuelve el uso más popular de la red.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>Un grupo reducido de ingenieros e instituciones de EE. UU. redacta, vía RFC, la "constitución técnica" de Internet.</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Nace la ética hacker: acceso libre a la información y colaboración abierta entre pares.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-1980" style="--dot:var(--hue-1980)">
+    <div class="era-node">💻</div>
+    <div class="era-head"><h3>Década de 1980</h3><span class="era-range">1980–1989</span></div>
+    <p class="era-frame">La computadora sale del laboratorio y entra a la oficina y el hogar, mientras Internet adopta su protocolo definitivo.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: cargar el disquete en la computadora">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <rect x="40" y="18" width="110" height="72" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect class="impact-glow" x="50" y="28" width="90" height="48" fill="currentColor" opacity=".14" style="--delay:1.15s; --glow-base:.14;"/>
+        <rect x="80" y="90" width="30" height="8" fill="currentColor"/>
+        <rect x="40" y="98" width="200" height="10" rx="3" fill="currentColor" opacity=".5"/>
+        <g fill="currentColor" opacity=".8">
+          <rect x="50" y="88" width="10" height="6"/><rect x="66" y="88" width="10" height="6"/><rect x="82" y="88" width="10" height="6"/>
+        </g>
+        <g class="floppy-slide">
+          <rect x="290" y="30" width="70" height="60" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="325" cy="66" r="10" fill="none" stroke="currentColor" stroke-width="3"/>
+          <rect x="300" y="34" width="50" height="18" fill="currentColor" opacity=".15"/>
+        </g>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para cargar el disquete</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">1981</span><span class="ev">IBM lanza la IBM PC y populariza la computadora personal.</span></div>
+      <div class="ledger-row"><span class="yr">1 ene 1983</span><span class="ev">"Flag Day": ARPANET adopta TCP/IP — nace técnicamente Internet.</span></div>
+      <div class="ledger-row"><span class="yr">1983</span><span class="ev">Paul Mockapetris inventa el DNS: nombres en vez de números.</span></div>
+      <div class="ledger-row"><span class="yr">1985</span><span class="ev">symbolics.com, primer dominio .com; nace NSFNET.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>TCP/IP + DNS: Internet ya es interoperable y navegable por nombre.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>La informática sale de las universidades y llega a aficionados y pequeñas empresas.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>IBM, Apple y Microsoft empiezan a disputarse el mercado que dominará la industria tech.</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Nacen las subculturas hacker y los BBS: primeras comunidades digitales por módem.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-1990" style="--dot:var(--hue-1990)">
+    <div class="era-node">🌍</div>
+    <div class="era-head"><h3>Década de 1990</h3><span class="era-range">1990–1999</span></div>
+    <p class="era-frame">La World Wide Web convierte una red de especialistas en un medio para cualquiera con un navegador.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: hacer clic y cargar una página web">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <rect x="40" y="20" width="230" height="72" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+        <line x1="40" y1="40" x2="270" y2="40" stroke="currentColor" stroke-width="2"/>
+        <circle cx="52" cy="30" r="3" fill="currentColor"/><circle cx="62" cy="30" r="3" fill="currentColor" opacity=".5"/><circle cx="72" cy="30" r="3" fill="currentColor" opacity=".3"/>
+        <rect x="86" y="26" width="160" height="9" rx="4" fill="currentColor" opacity=".16"/>
+        <rect class="progress-fill" x="86" y="26" width="160" height="9" rx="4" fill="currentColor" opacity=".6"/>
+        <circle cx="120" cy="66" r="26" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M94,66 h52 M120,40 a26,26 0 0 1 0,52 M120,40 a12,26 0 0 1 0,52" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".7"/>
+        <text x="200" y="72" font-family="IBM Plex Mono, monospace" font-size="13" fill="currentColor">www</text>
+        <g class="cursor-click" style="--ctx:-144px; --cty:-6px;">
+          <path d="M310,32 L310,84 L326,70 L336,90 L344,86 L334,66 L350,64 Z" fill="currentColor" stroke="var(--bg-raised)" stroke-width="2" stroke-linejoin="round"/>
+        </g>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para cargar la página</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">1989–91</span><span class="ev">Tim Berners-Lee crea la Web en el CERN y la abre al público.</span></div>
+      <div class="ledger-row"><span class="yr">1993</span><span class="ev">Mosaic: primer navegador gráfico de uso masivo.</span></div>
+      <div class="ledger-row"><span class="yr">31 may 1994</span><span class="ev">Internet llega a Colombia (InterRed: Bogotá, Cali, Medellín).</span></div>
+      <div class="ledger-row"><span class="yr">1998</span><span class="ev">Nace Google.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>HTTP, HTML y URL: la capa que hace la red visible y navegable con un clic.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>La información sale de bibliotecas y medios tradicionales; empieza la indexación mundial del saber.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>El poder migra hacia el comercio electrónico y la tecnología (Amazon, eBay y luego Google).</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Primera "brecha digital" reconocida entre países; llega la Internet académica a América Latina.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-2000" style="--dot:var(--hue-2000)">
+    <div class="era-node">📱</div>
+    <div class="era-head"><h3>Década de 2000</h3><span class="era-range">2000–2009</span></div>
+    <p class="era-frame">La Web deja de ser solo para leer: cualquiera puede publicar, y el teléfono se vuelve una puerta a Internet.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: dar me gusta y compartir desde el teléfono">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <rect x="50" y="16" width="66" height="80" rx="10" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect class="impact-glow" x="58" y="28" width="50" height="52" fill="currentColor" opacity=".14" style="--delay:.9s; --glow-base:.14;"/>
+        <circle cx="83" cy="88" r="3.5" fill="currentColor"/>
+        <g class="impact-bounce" style="--delay:1.0s;">
+          <path d="M150,30 q70,-24 70,20 q0,26 -30,26 l-14,16 v-16 q-26,-6 -26,-26 q0,-14 0,-20" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+          <text x="185" y="60" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="20" fill="currentColor" text-anchor="middle">+1</text>
+        </g>
+        <circle cx="330" cy="40" r="18" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M323,32 l14,8 l-14,8 z" fill="currentColor"/>
+        <circle cx="300" cy="82" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="336" cy="72" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="336" cy="94" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="307" y1="79" x2="329" y2="74" stroke="currentColor" stroke-width="2"/>
+        <line x1="307" y1="85" x2="329" y2="92" stroke="currentColor" stroke-width="2"/>
+        <circle class="flow-dot" cx="303" cy="80" r="3" fill="currentColor" style="--tx:24px; --ty:-6px; animation-delay:.2s;"/>
+        <circle class="flow-dot" cx="303" cy="84" r="3" fill="currentColor" style="--tx:24px; --ty:8px; animation-delay:.35s;"/>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para dar me gusta y compartir</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">2001</span><span class="ev">Wikipedia: conocimiento colectivo, abierto y editado por voluntarios.</span></div>
+      <div class="ledger-row"><span class="yr">2004</span><span class="ev">Nace Facebook y se populariza el término "Web 2.0".</span></div>
+      <div class="ledger-row"><span class="yr">2007</span><span class="ev">Apple lanza el iPhone.</span></div>
+      <div class="ledger-row"><span class="yr">2008</span><span class="ev">Las redes sociales se usan para movilización política (campaña de Obama).</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>Web 2.0, banda ancha, computación en la nube (AWS) y el primer smartphone de masas.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>Nace el "prosumidor": cualquiera produce y consume contenido a escala global.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>Se perfilan los futuros gigantes tech; la publicidad por datos empieza a financiar la web "gratis".</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Ciberactivismo organizado (Anonymous, Wikileaks) y redes sociales como herramienta electoral.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-2010" style="--dot:var(--hue-2010)">
+    <div class="era-node">🤖</div>
+    <div class="era-head"><h3>Década de 2010</h3><span class="era-range">2010–2019</span></div>
+    <p class="era-frame">El smartphone se vuelve universal; la vigilancia masiva y el poder de unas pocas plataformas salen a la luz.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: los datos suben a la nube y el candado se cierra">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <path d="M70,70 q-18,0 -18,-16 q0,-14 14,-16 q2,-20 24,-20 q18,0 22,14 q16,0 16,16 q0,16 -16,22 z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="150" y="60" width="42" height="34" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="163" cy="76" r="3.4" fill="currentColor"/><circle cx="179" cy="76" r="3.4" fill="currentColor"/>
+        <line x1="171" y1="60" x2="171" y2="48" stroke="currentColor" stroke-width="3"/><circle cx="171" cy="44" r="4" fill="currentColor"/>
+        <circle class="flow-dot" cx="168" cy="40" r="3" fill="currentColor" style="--tx:-70px; --ty:-24px;"/>
+        <circle class="flow-dot" cx="174" cy="42" r="3" fill="currentColor" style="--tx:-88px; --ty:-16px; animation-delay:.22s;"/>
+        <circle class="flow-dot" cx="171" cy="38" r="3" fill="currentColor" style="--tx:-76px; --ty:-32px; animation-delay:.4s;"/>
+        <rect x="300" y="52" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path class="lock-shackle" d="M308,52 v-12 a12,12 0 0 1 24,0 v12" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="320" cy="68" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para ver los datos subir</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">2010–11</span><span class="ev">Primavera Árabe: las redes sociales ayudan a organizar protestas masivas.</span></div>
+      <div class="ledger-row"><span class="yr">2013</span><span class="ev">Edward Snowden revela la vigilancia masiva de la NSA.</span></div>
+      <div class="ledger-row"><span class="yr">mar 2018</span><span class="ev">Escándalo de Cambridge Analytica y datos de Facebook.</span></div>
+      <div class="ledger-row"><span class="yr">25 may 2018</span><span class="ev">Entra en vigor el GDPR, la gran regulación europea de datos.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>4G, big data y machine learning aplicados a recomendación y traducción automática.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>Algoritmos de personalización deciden qué información ve cada quien ("burbujas de filtro").</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>Un puñado de plataformas (GAFAM) concentra datos e infraestructura global.</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>15-M, Occupy, #MeToo y protestas en Chile y Hong Kong, organizadas en redes.</p></div>
+    </div>
+  </article>
+
+  <article class="era" id="s-2020" style="--dot:var(--hue-2020-b)">
+    <div class="era-node gradient-node">🧠</div>
+    <div class="era-head"><h3>2020 — Actualidad</h3><span class="era-range">2020–2026</span></div>
+    <p class="era-frame">Una pandemia obliga a digitalizar la vida de golpe; después, la IA generativa empieza a escribir, diseñar y decidir con nosotros.</p>
+    <div class="era-visual" role="button" tabindex="0" aria-label="Reproducir animación: la red neuronal recibe datos y se activa">
+      <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="110" fill="var(--dot)" opacity=".08"/>
+        <g stroke="currentColor" stroke-width="1.6" opacity=".8">
+          <line x1="90" y1="30" x2="200" y2="55"/>
+          <line x1="90" y1="80" x2="200" y2="55"/>
+          <line x1="200" y1="55" x2="310" y2="30"/>
+          <line x1="200" y1="55" x2="310" y2="80"/>
+          <line x1="90" y1="30" x2="90" y2="80"/>
+          <line x1="310" y1="30" x2="310" y2="80"/>
+        </g>
+        <circle cx="90" cy="30" r="8" fill="currentColor" opacity=".55"/>
+        <circle cx="90" cy="80" r="8" fill="currentColor" opacity=".55"/>
+        <circle cx="310" cy="30" r="8" fill="currentColor" opacity=".55"/>
+        <circle cx="310" cy="80" r="8" fill="currentColor" opacity=".55"/>
+        <circle class="flow-dot" cx="90" cy="30" r="3.5" fill="currentColor" style="--tx:110px; --ty:25px;"/>
+        <circle class="flow-dot" cx="90" cy="80" r="3.5" fill="currentColor" style="--tx:110px; --ty:-25px; animation-delay:.12s;"/>
+        <circle class="flow-dot" cx="310" cy="30" r="3.5" fill="currentColor" style="--tx:-110px; --ty:25px; animation-delay:.22s;"/>
+        <circle class="flow-dot" cx="310" cy="80" r="3.5" fill="currentColor" style="--tx:-110px; --ty:-25px; animation-delay:.06s;"/>
+        <g class="impact-bounce" style="--delay:1.25s;">
+          <circle cx="200" cy="55" r="17" fill="currentColor"/>
+          <path d="M203,42 l-11,18 h9 l-3,14 l13,-19 h-9 z" fill="var(--bg-raised)"/>
+        </g>
+      </svg>
+      <span class="play-badge" aria-hidden="true">▶</span>
+      <span class="era-hint" aria-hidden="true">Toca para activar la red</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-title">Registro de eventos</div>
+      <div class="ledger-row"><span class="yr">2020</span><span class="ev">La pandemia acelera teletrabajo, educación y salud virtuales en semanas.</span></div>
+      <div class="ledger-row"><span class="yr">30 nov 2022</span><span class="ev">OpenAI lanza ChatGPT y masifica la IA generativa.</span></div>
+      <div class="ledger-row"><span class="yr">1 ago 2024</span><span class="ev">Entra en vigor el AI Act, primera regulación integral de IA en el mundo.</span></div>
+      <div class="ledger-row"><span class="yr">2025–26</span><span class="ev">Auge de los agentes de IA capaces de ejecutar tareas de forma autónoma.</span></div>
+    </div>
+    <div class="legend">
+      <span class="legend-caption">Sigue una capa:</span>
+      <button class="legend-btn" data-dim="tec" style="--c:var(--dim-tec)"><span class="dot"></span>🔧 Tecnología</button>
+      <button class="legend-btn" data-dim="con" style="--c:var(--dim-con)"><span class="dot"></span>📚 Conocimiento</button>
+      <button class="legend-btn" data-dim="poder" style="--c:var(--dim-poder)"><span class="dot"></span>⚖️ Poder</button>
+      <button class="legend-btn" data-dim="soc" style="--c:var(--dim-soc)"><span class="dot"></span>📢 Sociedad</button>
+      <button class="legend-reset" data-reset>Ver todo</button>
+    </div>
+    <div class="dims">
+      <div class="chip" data-dim="tec"><div class="chip-h">🔧 Tecnología</div><p>5G, Internet de las Cosas e IA generativa: texto, imagen, audio, video y agentes.</p></div>
+      <div class="chip" data-dim="con"><div class="chip-h">📚 Conocimiento</div><p>La IA redacta, traduce y programa: se automatiza parte de la producción del saber.</p></div>
+      <div class="chip" data-dim="poder"><div class="chip-h">⚖️ Poder</div><p>Pocas empresas de IA y de nube concentran el cómputo; disputa geopolítica por chips y modelos.</p></div>
+      <div class="chip" data-dim="soc"><div class="chip-h">📢 Sociedad</div><p>Debates sobre empleo, salud mental digital y soberanía tecnológica del sur global.</p></div>
+    </div>
+  </article>
+</div>
+
+<section class="closing wrap" id="s-cierre">
+  <div class="kicker">// síntesis</div>
+  <h2>Cinco hitos, dos escalas, un puñado de retos</h2>
+
+  <div class="hitos">
+    <div class="hito"><span class="num">01</span><div><h4>ARPANET (1969)</h4><p>La primera red operativa de computadoras: el germen técnico e institucional de todo Internet posterior.</p></div></div>
+    <div class="hito"><span class="num">02</span><div><h4>TCP/IP — "Flag Day" (1983)</h4><p>El momento en que distintas redes pudieron hablar el mismo idioma, dando origen técnico a "Internet".</p></div></div>
+    <div class="hito"><span class="num">03</span><div><h4>World Wide Web (1989–91)</h4><p>Tim Berners-Lee convierte una infraestructura de especialistas en un medio para el público general.</p></div></div>
+    <div class="hito"><span class="num">04</span><div><h4>iPhone e Internet móvil (2007)</h4><p>Internet deja de ser un lugar al que "se va" y se vuelve una capa permanente de la vida diaria.</p></div></div>
+    <div class="hito"><span class="num">05</span><div><h4>IA generativa — ChatGPT (2022)</h4><p>Las máquinas dejan de solo transmitir conocimiento: empiezan a generarlo y mediarlo.</p></div></div>
+  </div>
+
+  <h2>Lo local frente a lo global</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 640 220" role="img" aria-label="Diagrama comparando el impacto global de Internet, que tiende a la convergencia de plataformas y mercados, con el impacto local en Colombia, marcado por adaptación desigual y brechas de acceso.">
+      <defs>
+        <marker id="arrowL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <circle cx="120" cy="70" r="54" fill="none" stroke="var(--brand-blue)" stroke-width="2.5"/>
+      <text x="120" y="65" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="var(--brand-blue)">GLOBAL</text>
+      <text x="120" y="82" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="currentColor">convergencia</text>
+
+      <circle cx="520" cy="70" r="54" fill="none" stroke="var(--hue-1990)" stroke-width="2.5"/>
+      <text x="520" y="65" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="var(--hue-1990)">LOCAL</text>
+      <text x="520" y="82" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="currentColor">adaptación</text>
+
+      <line x1="176" y1="70" x2="464" y2="70" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrowL)" marker-start="url(#arrowL)" opacity=".6"/>
+      <text x="320" y="58" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">brecha digital</text>
+
+      <text x="120" y="140" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--ink-soft)">
+        <tspan x="120" dy="0">Mercados y plataformas</tspan>
+        <tspan x="120" dy="15">interconectados al instante;</tspan>
+        <tspan x="120" dy="15">un puñado de empresas</tspan>
+        <tspan x="120" dy="15">define el estándar mundial.</tspan>
+      </text>
+      <text x="520" y="140" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--ink-soft)">
+        <tspan x="520" dy="0">Llegó en 1994, limitada a</tspan>
+        <tspan x="520" dy="15">3 ciudades; hoy persisten</tspan>
+        <tspan x="520" dy="15">brechas urbano-rurales y</tspan>
+        <tspan x="520" dy="15">dependencia tecnológica.</tspan>
+      </text>
+    </svg>
+    <figcaption>Mientras la dinámica global converge hacia plataformas, protocolos y mercados comunes, lo local —como Colombia— enfrenta el reto de adaptar esa infraestructura a su propia geografía, idioma y economía. La "brecha digital" es la tensión no resuelta entre ambas escalas.</figcaption>
+  </figure>
+
+  <h2>Retos de la sociedad en red, hoy</h2>
+  <ul class="retos">
+    <li>Brecha digital persistente en acceso, velocidad y habilidades, entre y dentro de los países.</li>
+    <li>Desinformación y "deepfakes" generados por IA que erosionan la confianza informativa.</li>
+    <li>Concentración del poder económico, de datos y de cómputo en pocas corporaciones.</li>
+    <li>Privacidad y vigilancia masiva, estatal y corporativa, sobre las comunicaciones.</li>
+    <li>Regulación fragmentada de plataformas e inteligencia artificial entre bloques y países.</li>
+    <li>Impacto ambiental del consumo energético de los centros de datos y la IA.</li>
+    <li>Salud mental y bienestar digital frente a la polarización y la sobrecarga informativa.</li>
+    <li>Automatización del empleo por IA generativa y agentes autónomos.</li>
+    <li>Ciberseguridad y geopolítica tecnológica: chips, modelos e infraestructura como activos estratégicos.</li>
+  </ul>
+</section>
+
+<footer>Sociedad en Red · NRC 93054 · Liliana Andrea Peña Leal · UNIMINUTO</footer>
+
+<script>
+(function(){
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.nav-pill'));
+  var sections = pills.map(function(p){ return document.getElementById(p.dataset.target); });
+
+  pills.forEach(function(p){
+    p.addEventListener('click', function(){
+      var el = document.getElementById(p.dataset.target);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  var progressFill = document.getElementById('progressFill');
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var idx = sections.indexOf(entry.target);
+        if(idx === -1) return;
+        if(entry.isIntersecting){
+          pills.forEach(function(p){ p.classList.remove('active'); });
+          pills[idx].classList.add('active');
+          if(progressFill){
+            var dot = getComputedStyle(pills[idx]).getPropertyValue('--dot').trim();
+            if(dot) progressFill.style.background = dot;
+          }
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+    sections.forEach(function(s){ if(s) obs.observe(s); });
+  }
+
+  function updateProgress(){
+    if(!progressFill) return;
+    var doc = document.documentElement;
+    var scrollable = doc.scrollHeight - doc.clientHeight;
+    var pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+    progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* theme toggle: light / dark / (system on first load) */
+  var themeBtn = document.getElementById('themeToggle');
+  var root = document.documentElement;
+  function applyTheme(t){
+    if(t){ root.setAttribute('data-theme', t); } else { root.removeAttribute('data-theme'); }
+    if(themeBtn) themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  var savedTheme = null;
+  try{ savedTheme = localStorage.getItem('sociedad-red-theme'); }catch(e){}
+  if(savedTheme) applyTheme(savedTheme);
+  if(themeBtn){
+    themeBtn.addEventListener('click', function(){
+      var current = root.getAttribute('data-theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDarkNow = current ? current === 'dark' : prefersDark;
+      var next = isDarkNow ? 'light' : 'dark';
+      applyTheme(next);
+      try{ localStorage.setItem('sociedad-red-theme', next); }catch(e){}
+    });
+  }
+
+  var legendBtns = Array.prototype.slice.call(document.querySelectorAll('.legend-btn'));
+  var resetBtns = Array.prototype.slice.call(document.querySelectorAll('.legend-reset'));
+  var legendStatus = document.getElementById('legendStatus');
+  var DIM_LABELS = { tec: 'Tecnología', con: 'Conocimiento', poder: 'Poder', soc: 'Sociedad' };
+  function setFilter(dim){
+    if(dim){
+      document.body.setAttribute('data-filter', dim);
+      var styleTag = document.getElementById('dynFilterStyle');
+      if(!styleTag){ styleTag = document.createElement('style'); styleTag.id='dynFilterStyle'; document.head.appendChild(styleTag); }
+      styleTag.textContent = 'body[data-filter] .chip[data-dim="'+dim+'"]{opacity:1;filter:none;box-shadow:0 0 0 2px var(--c) inset;}';
+    } else {
+      document.body.removeAttribute('data-filter');
+    }
+    legendBtns.forEach(function(b){
+      var isMatch = b.dataset.dim === dim;
+      b.classList.toggle('active', isMatch);
+      b.classList.toggle('dimmed', !!dim && !isMatch);
+    });
+    if(legendStatus){
+      legendStatus.innerHTML = dim
+        ? 'Resaltando <strong>' + DIM_LABELS[dim] + '</strong> en las 9 etapas — el resto de las tarjetas se atenúa más abajo. Haz clic de nuevo o en "Ver todo" para quitar el filtro.'
+        : 'Mostrando las 4 capas en todas las décadas. Haz clic en una categoría para resaltarla y atenuar las demás.';
+    }
+  }
+  legendBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var isActive = b.classList.contains('active');
+      setFilter(isActive ? null : b.dataset.dim);
+    });
+  });
+  resetBtns.forEach(function(btn){ btn.addEventListener('click', function(){ setFilter(null); }); });
+
+  /* era illustrations: click / Enter / Space to play; auto-play once on first view */
+  var visuals = Array.prototype.slice.call(document.querySelectorAll('.era-visual'));
+  var playTimers = new WeakMap();
+  function playVisual(v){
+    if(playTimers.has(v)) clearTimeout(playTimers.get(v));
+    v.classList.remove('playing');
+    void v.offsetWidth; /* force reflow so the animation can restart from the beginning */
+    v.classList.add('playing');
+    var t = setTimeout(function(){ v.classList.remove('playing'); }, 2200);
+    playTimers.set(v, t);
+  }
+  visuals.forEach(function(v){
+    v.addEventListener('click', function(){ playVisual(v); });
+    v.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
+        e.preventDefault();
+        playVisual(v);
+      }
+    });
+  });
+  if('IntersectionObserver' in window){
+    var autoplayObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          playVisual(entry.target);
+          autoplayObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .5 });
+    visuals.forEach(function(v){ autoplayObs.observe(v); });
+  }
+})();
+</script>
+
+</body>
+</html>
